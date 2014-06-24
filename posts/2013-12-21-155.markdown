@@ -1,0 +1,49 @@
+---
+author: richardgoulter
+comments: true
+date: 2013-12-21 07:56:58+00:00
+layout: post
+slug: '155'
+title: Yet More Discussion of Argument and Dogma
+wordpress_id: 155
+---
+
+Computer Science has to be one of the most political areas to study as an Undergrad. (Others might use the word "religious" instead, but we mean the same thing).
+It's damn easy to get into dumb arguments over something. (Usually things like 'which is a better tool to use', for example).
+-- I think grammar offers a similar domain for arguments, but anyway..
+
+Perhaps sometimes it's interesting to look at these arguments.
+Sometimes.
+Maybe it's because I walk out either feeling I now know more, or I now know there's lots more I don't understand.
+As an example, there was this opinion post mis-titled ["Please, stay away from rebase"](http://geekblog.oneandoneis2.org/index.php/2013/04/30/please-stay-away-from-rebase); and even without much knowledge in that area, it's clear to see the OP knows his stuff, more than those arguing with him. (The title, unfortunately, riles up folk who interpret it as "never use Git rebase" or "Git rebase is bad").
+
+My relationship with "arguments" is very love/hate, however.
+
+One of the (pseudo?) philosophical questions you gotta ask yourself is whether humans are rational in thought, and therein capable of arguing rationally.
+I mean, if argument is not _rational_ argument, then surely it's going to be very easy to miss the whole point, or turn the "argument" into a matter of pride and power ("politics").
+
+Perhaps what I mean to illustrate with reference to the "git rebase" argument is that, it's fantastic to be able to hold some impartial view ( - it's easy here, because if you don't use Git, you probably couldn't give a shit - ) and see the arguments independent of oneself.
+To be able to see and try to understand both sides of the argument.
+I didn't post a link above, but it wouldn't be too hard to try Googling for "use git rebase" and find arguments in-favour; _from which, _having seen both sides of an argument, you can then form your opinion as to what is "right". (Which may be one or the other, or more likely a compromise between extremes).
+
+And I reckon if we could all argue rationally, that kindof thing would be damn easy to do,
+but it just doesn't seem to happen.
+(Would you say all the above is rational argument or not? Perhaps if you agree with the above, you wouldn't say there's anything objectionable about it; whereas if you think it's full of shit, you'd be keen to point out the flaws...).
+
+And so dogma is bad because it's like the enemy of rational argument, blah blah... that much should be pretty clear; surely I've ranted about it before. If not from me, I'd hope you've seen the sentiment expressed before...
+
+But I wonder, though, how much even _language_ gets in the way of rational thought.
+Say I don't like Aaron.
+I think I'm allowed to not like Aaron. Because.
+But I reckon to just say "I don't like Aaron. He's an asshole." or "I don't like assholes." kindof ... kindof presupposes the question about why I don't like Aaron.
+We all know "assholes" are bad, and it's okay if we don't like them.
+By using the word "asshole" it might side-step rationality (at worst), or at best lead to the question "Aaron is an asshole? What did Aaron do which makes him an asshole?". (Which is exactly the same as "Why don't you like Aaron?", just with extra words).
+
+-- And I reckon that gets in the way of logical arguments, but more importantly, (since perhaps not everyone wants rational arguments..), probably gets in the way of 'higher understanding'.
+Ugh. Armchair philosophy and bullshit words. Sorry.
+I mean. If by calling Aaron an asshole I would no longer bother seeing Aaron as an equal, and just assume that whatever he says is shit.. I'd totally risk losing out on anything sensible Aaron has to say which I might otherwise benefit from.
+
+Dogma blinds one to the value of the opposition's argument, and blind's one to one's faults in one's own..
+I suspect using loaded words like "asshole" (or perhaps things like "racist", "conservative", "liberal", ...) is going to evoke such dogma.
+
+Oh, what a shame.
