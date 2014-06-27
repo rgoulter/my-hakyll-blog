@@ -53,6 +53,11 @@ div#header #navigation a {
 div#content {
     margin-left: 3em;
     margin-right: 3em;
+    margin-bottom: 0em;
+}
+
+div#footer {
+    clear: both;
 }
 
 div#footer {
@@ -62,6 +67,16 @@ div#footer {
     margin-top: 30px;
     padding: 12px 3em 12px 0px;
     text-align: right;
+}
+
+div#primary {
+    float: left;
+}
+
+div#secondary {
+    float: right;
+    /* margin-right: 7.6%; */
+    width: 18.8%;
 }
 
 h1 {
