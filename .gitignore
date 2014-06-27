@@ -2,3 +2,5 @@ _site/
 _cache/
 *.o
 *.hi
+site
+*.markdown
