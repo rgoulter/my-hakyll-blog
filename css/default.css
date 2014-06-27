@@ -1,21 +1,31 @@
 /* Adapted from the "twentyeleven" wordpress theme I was using on my blog. */
 body {
     color: black;
+    background: #e2e2e2;
     font-size: 16px;
     padding-left: 0;
     padding-right: 0;
 }
 
 #page {
+    background: #fff;
     margin-left: auto;
     margin-right: auto;
     max-width: 1000px;
 }
 
 div#header {
-    border-bottom: 2px solid black;
-    margin-bottom: 30px;
-    padding: 12px 0px 12px 0px;
+    padding: 12px 0px 0px 0px;
+}
+
+div#header img {
+    border-bottom: 5px solid black;
+    margin-top: 12px;
+    margin-bottom: 0px;
+}
+
+div#logo {
+    margin-left: 3em;
 }
 
 div#logo a {
@@ -28,6 +38,7 @@ div#logo a {
 
 div#header #navigation {
     text-align: right;
+    margin-right: 3em;
 }
 
 div#header #navigation a {
@@ -39,12 +50,17 @@ div#header #navigation a {
     text-transform: uppercase;
 }
 
+div#content {
+    margin-left: 3em;
+    margin-right: 3em;
+}
+
 div#footer {
     border-top: solid 2px black;
     color: #555;
     font-size: 12px;
     margin-top: 30px;
-    padding: 12px 0px 12px 0px;
+    padding: 12px 3em 12px 0px;
     text-align: right;
 }
 
