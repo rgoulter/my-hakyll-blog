@@ -31,33 +31,9 @@ main = hakyll $ do
 
     categories <- buildCategories "posts/**.markdown" (fromCapture "categories/*.html")
 
-    tagsRules tags $ \tag pattern -> do
-        let title = "Posts tagged \"" ++ tag ++ "\""
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll pattern
-            let ctx = constField "title" title
-                      `mappend` listField "posts" postCtx (return posts)
-                      `mappend` defaultContext
+    rulesForTags categories (\tag -> "Posts in category \"" ++ tag ++ "\"")
 
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/tag.html" ctx
-                >>= loadAndApplyTemplate "templates/default.html" ctx
-                >>= relativizeUrls
-
-    tagsRules categories $ \tag pattern -> do
-        let title = "Posts in category \"" ++ tag ++ "\""
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll pattern
-            let ctx = constField "title" title `mappend`
-                      listField "posts" postCtx (return posts) `mappend`
-                      defaultContext
-
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/tag.html" ctx
-                >>= loadAndApplyTemplate "templates/default.html" ctx
-                >>= relativizeUrls
+    rulesForTags tags (\tag -> "Posts tagged \"" ++ tag ++ "\"")
 
     match "posts/**.markdown" $ do
         route $ setExtension "html"
@@ -109,3 +85,20 @@ postCtx =
 
 postCtxWithTags :: Tags -> Context String
 postCtxWithTags tags = tagsField "tags" tags `mappend` postCtx
+
+
+rulesForTags :: Tags -> (String -> String) -> Rules ()
+rulesForTags tags titleForTag =
+    tagsRules tags $ \tag pattern -> do
+    let title = titleForTag tag -- "Posts tagged \"" ++ tag ++ "\""
+    route idRoute
+    compile $ do
+        posts <- recentFirst =<< loadAll pattern
+        let ctx = constField "title" title
+                  `mappend` listField "posts" postCtx (return posts)
+                  `mappend` defaultContext
+
+        makeItem ""
+            >>= loadAndApplyTemplate "templates/tag.html" ctx
+            >>= loadAndApplyTemplate "templates/default.html" ctx
+            >>= relativizeUrls
