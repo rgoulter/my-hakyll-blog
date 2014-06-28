@@ -6,6 +6,8 @@ import           Hakyll
 -- for tags, follow tutorial from:
 -- http://javran.github.io/posts/2014-03-01-add-tags-to-your-hakyll-blog.html
 
+-- postsGlob :: Pattern
+-- postsGlob = "posts/*"
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -25,23 +27,39 @@ main = hakyll $ do
             >>= relativizeUrls
 
     -- build up tags
-    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
+    tags <- buildTags "posts/**.markdown" (fromCapture "tags/*.html")
+
+    categories <- buildCategories "posts/**.markdown" (fromCapture "categories/*.html")
 
     tagsRules tags $ \tag pattern -> do
-        let title = "Posts tagged\"" ++ tag ++ "\""
+        let title = "Posts tagged \"" ++ tag ++ "\""
         route idRoute
         compile $ do
             posts <- recentFirst =<< loadAll pattern
             let ctx = constField "title" title
                       `mappend` listField "posts" postCtx (return posts)
                       `mappend` defaultContext
-            
+
             makeItem ""
                 >>= loadAndApplyTemplate "templates/tag.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
 
-    match "posts/*" $ do
+    tagsRules categories $ \tag pattern -> do
+        let title = "Posts in category \"" ++ tag ++ "\""
+        route idRoute
+        compile $ do
+            posts <- recentFirst =<< loadAll pattern
+            let ctx = constField "title" title `mappend`
+                      listField "posts" postCtx (return posts) `mappend`
+                      defaultContext
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/tag.html" ctx
+                >>= loadAndApplyTemplate "templates/default.html" ctx
+                >>= relativizeUrls
+
+    match "posts/**.markdown" $ do
         route $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    (postCtxWithTags tags)
@@ -51,7 +69,7 @@ main = hakyll $ do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            posts <- recentFirst =<< loadAll "posts/**.markdown"
             let archiveCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Archives"            `mappend`
@@ -66,11 +84,12 @@ main = hakyll $ do
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            posts <- recentFirst =<< loadAll "posts/**.markdown"
             let indexCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Home"                `mappend`
                     field "taglist" (\_ -> renderTagList tags) `mappend`
+                    field "categorylist" (\_ -> renderTagList categories) `mappend`
                     defaultContext
 
             getResourceBody
