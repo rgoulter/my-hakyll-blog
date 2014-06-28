@@ -79,6 +79,11 @@ div#secondary {
     width: 18.8%;
 }
 
+div#navlinks {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
 h1 {
     font-size: 24px;
 }
