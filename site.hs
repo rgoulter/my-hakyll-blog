@@ -90,6 +90,8 @@ main = hakyll $ do
                         constField "posts" (concat itembodies) `mappend`
                         field "navlinkolder" (\_ -> return $ indexNavLink index 1 maxIndex) `mappend`
                         field "navlinknewer" (\_ -> return $ indexNavLink index (-1) maxIndex) `mappend`
+                        field "taglist" (\_ -> renderTagList tags) `mappend`
+                        field "categorylist" (\_ -> renderTagList categories) `mappend`
                         field "recent" (\_ -> recentPostList) `mappend`
                         defaultContext
  
