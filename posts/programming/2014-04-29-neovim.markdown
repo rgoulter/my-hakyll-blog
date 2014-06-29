@@ -1,0 +1,64 @@
+---
+author: richardgoulter
+comments: true
+date: 2014-04-29 13:48:36+00:00
+layout: post
+slug: neovim
+title: NeoVim
+wordpress_id: 229
+tags: editors, vim, neovim, linkdump
+---
+
+So. I just found out about NeoVim (sometimes abbreviated nvim) today.
+Which could be called "slow", seeing as their Bountysource fundraiser ended a month ago.
+
+There was a [post to the Vim Developer Google group mailing list](https://groups.google.com/forum/m/#!topic/vim_dev/x0BF9Y0Uby8), which saw a reply from Bram Moolenar and got some fairly heated discussion.
+[A corresponding reddit thread](http://www.reddit.com/r/linux/comments/1yrln5/bram_molenaar_responds_to_neovim/) has some [fairly understandable cynicism](http://www.reddit.com/r/linux/comments/1yrln5/bram_molenaar_responds_to_neovim/cfnex9w) of this idea:
+
+
+_"I agree with Bram here. For outsiders, it's so easy to say that a code base is too ugly, or too complex, but once you learn a particular code base, things like this usually do not matter that much."_
+
+
+The amusing thing is, though, this cynicism doesn't seem in line with what contributors have experienced. Some [anecdotal evidence from HN](https://news.ycombinator.com/item?id=7279358):
+
+
+"I've contributed to a lot of open source projects, and the Vim community has been the most difficult to work with. I've been writing C for almost two decades, and the Vim codebase is the _worst_ C I've ever seen"
+
+
+
+What I recall reading is that part of the motivation for Thiago de Arruda to start this fork is that the patches he wrote for Vim were rejected from the codebase because of uncertainty as to whether the changes would break anything.
+
+(The HN thread also features, I suppose naturally, links to [previous](https://github.com/chrizel/Yzis) [attempts](http://www.freehackers.org/VimIntegration) to fork Vim, as well as folk linking to [other](https://github.com/limetext/lime) [projects](https://github.com/yi-editor/yi) which relate to text editing for some reason).
+
+There is, of course, a Google Group / [mailing list for NeoVim](https://groups.google.com/forum/#!forum/neovim).
+It's here where [the author posts something](https://groups.google.com/forum/#!topic/neovim/ts_0qylNNVg) which has me really excited for the project; not the third-party integration or flashy features or anything, but the emphasis on testing:
+
+
+"_This may not be so obvious, but vim's biggest problem has nothing to do with the lack of the above features. It's something much more basic: poor testing infrastructure._
+
+
+
+
+
+_While vim has some automated tests(about 200 counting with the ~100 tests embedded in test 49) those only catch the 'biggest' bugs, with many small ones being introduced by patches and only detected at a later time. It's a true maintenance hell, and here's a post on reddit that illustrates the problem(even though the author himself disagrees with neovim):[http://www.reddit.com/r/programming/comments/1yjzez/neovim_a_project_to_refactor_and_modernize_the/cfla7j5](http://www.reddit.com/r/programming/comments/1yjzez/neovim_a_project_to_refactor_and_modernize_the/cfla7j5)_
+
+
+
+
+
+
+
+_The problem is that in it's current state, vim cannot grow because there's no easy way to write automated tests for it. The current test suite is very hard to understand and those that submit patches probably won't write tests because it's too complicated. But patches need to be tested, especially bug fixes which must acompany a regression to ensure they won't be reintroduced. So it's easy to see why Bram is skeptical about merging patches, especially new features: He has no way of knowing if those patches will break existing code. In the example given by the reddit comment, Bram 'solved' the problem by simply picking the lesser of two evils._
+
+
+
+
+
+
+
+_This is one of the firsts issues neovim aims to fix_"
+
+
+And it seems that NeoVim indeed [aims to be contributor friendly](http://www.reddit.com/r/vim/comments/22kemc/cool_progress_on_neovim/cgo1998). While I don't know what qualifies as "a good number" of contributors on a project at this kindof stage, [the graphs on GitHub](https://github.com/neovim/neovim/graphs/contributors) seem to show that it's got more traction than just one guy lugging at it.
+
+

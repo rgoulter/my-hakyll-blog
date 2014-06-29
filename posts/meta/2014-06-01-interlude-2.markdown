@@ -1,0 +1,13 @@
+---
+author: richardgoulter
+comments: true
+date: 2014-06-01 09:54:15+00:00
+layout: post
+slug: interlude-2
+title: Interlude
+wordpress_id: 233
+tags: meta
+---
+
+Looking over the recent posts.. it seems I write about text editors a lot.
+I came on here to write a post about a text editor. I've instead opted to write about one or two other things as well.

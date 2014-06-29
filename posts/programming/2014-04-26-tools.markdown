@@ -1,0 +1,48 @@
+---
+author: richardgoulter
+comments: true
+date: 2014-04-26 12:44:06+00:00
+layout: post
+slug: tools
+title: Tools
+wordpress_id: 211
+tags: editors, vim
+---
+
+Bram Moolenaar, the fella who created ViM, [talked in 2007 about how to be effective with your editor.](http://www.youtube.com/watch?v=eX9m3g5J-XA)
+Given that programmers love to disagree about which text editor is best, it comes as a surprise to see in this video that Bram isn't big on "ViM is the best". - The general guideline he gives is along the lines of '**get good with what you're happy using, or use ViM**'.
+This seems sensible to me.
+
+For most of the rest of this talk, Bram discusses various tips to improve with ViM.
+But in introducing these tips, he gives guidelines for "how to get good":
+
+
+
+	
+  * Detect Inefficiency,
+
+	
+  * Find out how to improve it,
+
+	
+  * Make this a habit.
+
+
+The first requires conscious effort to want to improve (or want to avoid doing things the wrong way). The last requires a follow-through of this effort.
+The second part is probably the trickiest. Bram suggested the mailing list, or just knowing people who use the tool. (Certainly the latter is a good one, I see tips on Facebook for ViM every now and then). Nowadays Stack Overflow (or some Stack Exchange site).
+(ViM in particular has a help manual which isn't entirely crap to read. Bloggers and resources like ViMcasts are good, too).
+
+But most importantly, Bram also points out two evils to avoid:
+
+	
+  * It's inefficient to never spend effort improving the tools you use.
+
+	
+  * It's inefficient to never use the tools for trying to always improve your tools.
+
+
+The former is I think how most people use their tools. The latter is an easy trap to fall into.
+
+I think our attitudes are to blame for this. Wouldn't it be great to be the guy who can wield his tools as well as Lincoln wields his axe (Vampire Hunter edition!).
+
+That said, I know that there are tools which I don't use/understand as much as I really ought to. (And I know that in my cohort I'm not the worst). I'm interested in finding resources which would make me better with these tools.

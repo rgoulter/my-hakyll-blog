@@ -1,0 +1,74 @@
+---
+author: richardgoulter
+comments: true
+date: 2013-12-01 16:39:38+00:00
+layout: post
+slug: skyrim
+title: Skyrim
+wordpress_id: 141
+tags: skyrim, game design, analysis
+---
+
+So, I just spent until 2am playing Skyrim; y'know like how when an hour has passed between when you looked at the clock?
+So I gotta consider "why".
+'cause Skyrim gives me doubts as to whether I enjoy playing it or not.
+
+I'm not a fantasy-genre kindof guy.
+And in general Skyrim just seems a bit .. finicky .. for what I'd prefer in a game; I don't appreciate that there are 1,000 different ways
+to fine tune any particular task.
+Chop wood? What for? -- I'd have to look that up on the Wiki. (And looking it up on the Wiki; half the time you'll inform yourself over something
+which wasn't so obvious, the other half you'll spoil the game. >.<).
+(I was trying to fight level-20 type enemies as a level-8 character. Didn't know they were obviously beyond my ability .. until I read the wiki).
+"finicky" because it needs a wiki; Far Cry 3 was an excellent game. You can get through all the crafting and exploration without use of a wiki.
+Its crafting is simple; but that's okay, because it's a shooting game, not a crafting game. In Skyrim, I don't think one can avoid being a fighter..
+
+My point is, there are things about Skyrim I certainly don't enjoy.
+But I still felt a compulsion to keep playing; just as I did with Saints Row the Third. (Stopped playing 'cause Skyrim clonked out when my internet did..).
+So, there must be something in the design of these games which keeps them as 'compelling' as they are.
+
+Saints Row was fantastic for its 'conquest' of the open world; as I progressed, the more I was able to purchase more properties/stores in the world;
+the more of the world I owned, the more money I was getting..
+Skyrim, from what I've seen, doesn't have the direct equivalent; even though you can go to the towns and become total-badass for that town, (buy a house and all),
+it's still not "yours".
+There are forts to clear out; but these get occupied after they've been cleared, and not by "your" guys. But all the same, either this, or the notion that
+you're completing "quests" in an area still does seem to satisfy this same urge.
+
+Skyrim isn't distinguished for it's world-conquest, though. Skyrim is an RPG-game.
+I like games with RPG-elements. I tend to think the concept is neat, and more games should have it.
+Far Cry 3 is a prime example; while your character isn't quite as super as the pure action-shooter counterparts may be, the mechanic of progressing
+through the game, becoming more powerful *in a unique, player-chosen* way is fun. (Choosing which ability to upgrade works well as a mechanic; do I
+want to reload quicker, or would it be more useful if I could run for longer? -- This choice makes the player consider what their gameplay experience has
+been, what situation they're now in, and what it's likely to be in future. How engaging..).
+Saints Row kindof has this, but to a much smaller extent. (Well, I'm not sure if "upgrades" in general count as RPG-elements? The pure action games don't
+tend to have them..).
+Skyrim has 'RPG abilities' in abundence. -- Not in excess, I don't think, considering it's much more of an 'RPG' game than Far Cry.. but I'm talking only about
+the skill/upgrade tree.
+I can't say I know Skyrim too well; I'm not going to play it to hack-out the best-I-can-be builds for things. But perhaps the "additional step" Skyrim has which
+makes it more RPG-ish than games like Saints Row is the classing: Fighter, Thief, or Wizard; and the upgrades are partitioned among these. SR3 didn't have anything
+like that. Far Cry 3 kindof has this, in that the skill tree is partitioned among stealth / close-combat / range (or something like that).
+
+The weapons in Skyrim are very RPG-ish in that they'll have their 'Strength' stats, and you can loot weapons and such from enemies, either choosing to use the weapon
+or sell it to some merchant.
+-- This, I think, leads to this design which makes Skyrim so compelling to play:
+"Bigger swords to fight bigger bad guys; fight bigger bad guys to get bigger swords."
+Skyrim, I think, has this well done. Not only are there the weapons themselves, but also the upgrades/skills ("big sword")..
+In Far Cry 3, a major driver of this cycle was capturing forts, and hunting. (The more you hunt, the more powerful you can be. The more forts you take,
+the more comfortably you can hunt, the better weapons you get..).
+Saints Row, my main drive for this was "more cash to get more cash"; but then getting the infinite health/ammo/etc. type unlocks made the game fun.
+
+XCOM: Enemy Unknown had a similar thing going on; weapons started off as 'basic', the rifles/shotguns/sniper-rifles could be upgraded to laser/plasma weapons as the
+player researched those technologies and captured the resources. -- That's a 'good' example since the tiering is very obvious.
+The end result of a full-upgrade is you have super-powerful plasma weapons.
+
+Far Cry 3 also has the very obvious end result from these conquests that i) you'll have fully upgraded bags/such (from hunting), ii) full access to the islands
+(from capturing forts), iii) good free weapons (from capturing outposts).
+Saints Row 3 had the end result of "conquering" the city (which has some benefits); and the invincibility make the game a great playground of fun.
+
+With Skyrim, there's a satisfaction in taking down enemies which were once difficult very easily.
+But it's also clear that the upgrade tree is finite. And there are some powerful-looking abilities a fair way up the tree.
+The 'tiering' is less discrete than with XCOM. ... Go look at the Wiki, I don't know.
+
+Anyway.
+It's clear to see that Skyrim executes clever design in it's game mechanics pretty well; and that features from RPG games like Skyrim can integrate or augment
+fairly well into more mainstream game designs, like Far Cry 3.
+

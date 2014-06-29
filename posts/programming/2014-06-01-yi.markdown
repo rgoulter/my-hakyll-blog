@@ -1,0 +1,36 @@
+---
+author: richardgoulter
+comments: true
+date: 2014-06-01 11:06:11+00:00
+layout: post
+slug: yi
+title: Yi
+wordpress_id: 237
+tags: editors, yi, haskell
+---
+
+So. Emacs and Vim are pretty much long-standing kings of text editors.
+(I'll include the "vi is awesome, you should use that" in the Vim camp; I'll include the Sublime Text folk in the "use whatever works" camp).
+And a sidetrack to talk about how LightTable looks interesting, or whether NeoVim will supersede Vim's place, or whether Vim is the set of movement commands or whether it's the code itself... let's not get into that.
+But what is pertinent for discussion here is that Emacs is much more extensible, with its Emacs-Lisp, than Vim is. And Vimscript isn't a wildly popular editor; plus Vim's codebase is rather infamous for its large amount of cruft.
+
+Yi is a compelling editor to consider, therefore, in that Yi is to Haskell as Emacs is to Lisp.
+
+Will Yi ever get a place alongside Emacs and Vim? It's unlikely. But Emacs and Vim aren't as widespread as you'd hope, either.
+
+Downsides being easy to spot.
+You've probably not heard of Yi. Neither has anyone else you know.
+If you're like me, you might know a couple of people who sometimes use Haskell.
+While not too difficult to install, there's really not a lot of stuff on the internet about Yi; much of what is there seems to be written for Yi developers and not necessarily Yi "users".
+The community for Yi appears to be _tiny_. Haskell community is famously friendly, but still.
+Emacs and Vim have many more plugins and such than Yi does.
+
+Those aren't all mutually exclusive points; they seem to relate to each other a lot. But still.
+
+What's cool, then, is that it's _Haskell_.
+This isn't exactly a hypothetical let's-write-an-editor-in-Haskell project. It's an editor which works. I'm not a heavy Yi user, but I'd think the Vim keybindings would be more than what a new Vim user would be capable of using. (First sem undergrads, and those who never used Vim beyond that, I mean).
+But that it's Haskell may mean something if you [agree Haskell is better than Lisp.
+](http://newartisans.com/2009/03/hello-haskell-goodbye-lisp/)Because Emacs is excellent because of its extensibility with Lisp. But Emacs is also good because it's so crap, [I hear](http://tkf.github.io/2013/06/04/Emacs-is-dead.html).
+More than being written in Haskell, Yi is _extensible_ in Haskell.
+
+So I wish it well, and I hope these things improve.
