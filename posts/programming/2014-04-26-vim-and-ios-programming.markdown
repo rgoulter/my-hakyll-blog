@@ -18,7 +18,7 @@ Others have gone before me on this topic. [Here](http://ap4y.github.io/2013/11/1
 Fortunately for at least that much, the [XVim plugin](https://github.com/JugglerShu/XVim) for XCode works reasonably well for emulating the core Vim features for manipulating text, while still allowing for XCode's other features like autocompletion and debugging.
 (Every now and then these would slightly collide, but the convenience of motion commands outweighs the inconveniences you'll run into if not too careful. - The biggest problem I encountered was the conflict between XCode's parameter-filling in with like _<# int #>_ or so).
 
-- But, honestly, while Vim emulation is much more powerful than having to make the expense of using a mouse, what I really missed from Vim was fuzzy autocompletion (with [YouCompleteMe](https://github.com/Valloric/YouCompleteMe)).
+\- But, honestly, while Vim emulation is much more powerful than having to make the expense of using a mouse, what I really missed from Vim was fuzzy autocompletion (with [YouCompleteMe](https://github.com/Valloric/YouCompleteMe)).
 "fuzzy autocompletion" is great. The "autocompletion" part I'm sure we all understand. XCode has that. It's a big advantage in using IDEs. The "fuzzy" bit may be less common; to the layman it you could describe it as "matching by taking some of the letters, in order". Well. It's a subsequence, anyway. So rather than matching **getL**ength as **getL**, you could match with **glth** (**g**et**L**eng**th**) instead.
 Well. Just look at the gif on the link above. It's super-cool, by way of being super useful.
 [EDIT: If I do want fuzzy autocomplete in XCode, this looks like a plugin/patch which can achieve that].
