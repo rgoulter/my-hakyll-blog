@@ -20,8 +20,12 @@ import qualified Text.Blaze.Html5.Attributes as A
 -- for tags, follow tutorial from:
 -- http://javran.github.io/posts/2014-03-01-add-tags-to-your-hakyll-blog.html
 
--- postsGlob :: Pattern
--- postsGlob = "posts/*"
+-- Glob for matching the *.markdown posts under subdirectories of /posts/<category>/
+postsGlob :: Pattern
+postsGlob = "posts/**.markdown"
+
+blogPageForPageIdx :: Int -> String
+blogPageForPageIdx index = (if index==1 then "" else show index ++ "/") ++ "index.html"
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -41,15 +45,15 @@ main = hakyll $ do
             >>= relativizeUrls
 
     -- build up tags
-    tags <- buildTags "posts/**.markdown" (fromCapture "tags/*.html")
+    tags <- buildTags postsGlob (fromCapture "tags/*.html")
 
-    categories <- buildCategories "posts/**.markdown" (fromCapture "categories/*.html")
+    categories <- buildCategories postsGlob (fromCapture "categories/*.html")
 
     rulesForTags categories (\tag -> "Posts in category \"" ++ tag ++ "\"")
 
     rulesForTags tags (\tag -> "Posts tagged \"" ++ tag ++ "\"")
 
-    match "posts/**.markdown" $ do
+    match postsGlob $ do
         route $ setExtension "html"
         compile $ pandocCompiler
             >>= saveSnapshot "teaser"
@@ -60,7 +64,7 @@ main = hakyll $ do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/**.markdown"
+            posts <- recentFirst =<< loadAll postsGlob
             let archiveCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Archives"            `mappend`
@@ -73,7 +77,7 @@ main = hakyll $ do
 
 
     paginate 5 $ \index maxIndex itemsForPage -> do
-        let id = fromFilePath $ (if index==1 then "" else show index ++ "/") ++ "index.html"
+        let id = fromFilePath $ blogPageForPageIdx index
         create [id] $ do
             route idRoute
             compile $ do
@@ -100,24 +104,6 @@ main = hakyll $ do
                     >>= loadAndApplyTemplate "templates/default.html" allCtx
                     >>= relativizeUrls
 
-
-{-
-    match "index.html" $ do
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll "posts/**.markdown"
-            let indexCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Home"                `mappend`
-                    field "taglist" (\_ -> renderTagList tags) `mappend`
-                    field "categorylist" (\_ -> renderTagList categories) `mappend`
-                    defaultContext
-
-            getResourceBody
-                >>= applyAsTemplate indexCtx
-                >>= loadAndApplyTemplate "templates/default.html" indexCtx
-                >>= relativizeUrls
--}
 
     match "templates/*" $ compile templateCompiler
 
@@ -233,15 +219,13 @@ indexNavLink n d maxn = renderHtml ref
                    (preEscapedString lab)
         lab = if (d > 0) then "Older Entries &raquo;" else "&laquo; Newer Entries"
         refPage = if (n + d < 1 || n + d > maxn) then ""
-                  else case (n + d) of
-                    1 -> "index.html"
-                    _ -> (show $ n + d) ++ "/index.html"
+                  else blogPageForPageIdx (n + d)
 
 
 --------------------------------------------------------------------------------
 paginate:: Int -> (Int -> Int -> [Identifier] -> Rules ()) -> Rules ()
 paginate itemsPerPage rules = do
-    identifiers <- getMatches "posts/**.markdown"
+    identifiers <- getMatches postsGlob
 
     let sorted = reverse $ sortBy byDate identifiers
         chunks = chunk itemsPerPage sorted
