@@ -87,7 +87,7 @@ main = hakyll $ do
                         defaultContext
                     loadTeaser id = loadSnapshot id "teaser"
                                         >>= loadAndApplyTemplate "templates/teaser.html" (teaserCtx tags)
-                                        >>= relativizeUrls
+                                        -- >>= relativizeUrls
                 items <- sequence $ map loadTeaser itemsForPage
                 let itembodies = map itemBody items
                     postsCtx =
