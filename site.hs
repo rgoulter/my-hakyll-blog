@@ -94,8 +94,8 @@ main = hakyll $ do
                         constField "posts" (concat itembodies) `mappend`
                         field "navlinkolder" (\_ -> return $ indexNavLink index 1 maxIndex) `mappend`
                         field "navlinknewer" (\_ -> return $ indexNavLink index (-1) maxIndex) `mappend`
-                        field "taglist" (\_ -> renderTagList tags) `mappend`
-                        field "categorylist" (\_ -> renderTagList categories) `mappend`
+                        tagCloudField "taglist" 80 200 tags `mappend`
+                        field "categorylist" (\_ -> renderTagListLines categories) `mappend`
                         field "recent" (\_ -> recentPostList) `mappend`
                         defaultContext
  
@@ -239,3 +239,13 @@ paginate itemsPerPage rules = do
                     fn2 = takeFileName $ toFilePath id2
                     parseTime' fn = parseTime defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
                 in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
+
+
+--------------------------------------------------------------------------------
+-- | Render a simple tag list in HTML, with the tag count next to the item
+-- TODO: Maybe produce a Context here
+renderTagListLines :: Tags -> Compiler (String)
+renderTagListLines = renderTags makeLink (intercalate ",<br>")
+  where
+      makeLink tag url count _ _ = renderHtml $
+          H.a ! A.href (toValue url) $ toHtml (tag ++ " (" ++ show count ++ ")")
