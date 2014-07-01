@@ -38,7 +38,7 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
-    match (fromList ["about.rst", "contact.markdown"]) $ do
+    match (fromList ["yi.markdown"]) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
@@ -82,7 +82,6 @@ main = hakyll $ do
             route idRoute
             compile $ do
                 let allCtx =
-                        field "recent" (\_ -> recentPostList) `mappend`
                         field "title" (\_ -> return "Blog") `mappend`
                         defaultContext
                     loadTeaser id = loadSnapshot id "teaser"
@@ -96,7 +95,6 @@ main = hakyll $ do
                         field "navlinknewer" (\_ -> return $ indexNavLink index (-1) maxIndex) `mappend`
                         tagCloudField "taglist" 80 200 tags `mappend`
                         field "categorylist" (\_ -> renderTagListLines categories) `mappend`
-                        field "recent" (\_ -> recentPostList) `mappend`
                         defaultContext
  
                 makeItem ""
@@ -123,22 +121,6 @@ teaserCtx :: Tags -> Context String
 teaserCtx tags =
     field "teaser" teaserBody `mappend`
     (postCtxWithTags tags)
-
-
---------------------------------------------------------------------------------
-recentPostList :: Compiler String
-recentPostList = do
-    posts   <- fmap (take 10) . recentFirst =<< recentPosts
-    itemTpl <- loadBody "templates/indexpostitem.html"
-    list    <- applyTemplateList itemTpl defaultContext posts
-    return list
-
-
---------------------------------------------------------------------------------
-recentPosts :: Compiler [Item String]
-recentPosts = do
-    identifiers <- getMatches "posts/*"
-    return [Item identifier "" | identifier <- identifiers]
 
 
 --------------------------------------------------------------------------------
