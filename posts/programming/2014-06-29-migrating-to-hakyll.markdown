@@ -1,7 +1,7 @@
 ---
 title: Migrating to Hakyll
 author: Richard Goulter
-tags: haskell, blog
+tags: haskell, blog, hakyll
 ---
 
 So. I've taken the plunge and have started migrating to Hakyll.
