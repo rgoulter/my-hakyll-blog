@@ -6,7 +6,7 @@ layout: post
 slug: paradox-of-fandom
 title: Paradox of Fandom
 wordpress_id: 204
-tags: reading, goodreads
+tags: reading, goodreads, devil in winter, lisa kleypas, scandal in spring,
 ---
 
 I'd say I like reading. I read a fair number of books in a year.
