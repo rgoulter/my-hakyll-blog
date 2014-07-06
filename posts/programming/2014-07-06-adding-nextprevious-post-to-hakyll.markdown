@@ -20,7 +20,8 @@ take the `Identifier` of the _next_ post, and map that `Identifier` to a url.
 (Which is of type `Compiler String`).
 
 If it's unclear to you, then what I mean is that the problem I was struggling
-with was quite simple when done the wrong way.
+with was quite simple when done the right way; and I was thinking about it
+in the wrong way.
 
 When I struggled, I was wanting to get a `Compiler [String]` because I
 figured I would be able to look up the url after some url. I thought there
