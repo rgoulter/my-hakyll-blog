@@ -66,6 +66,8 @@ main = hakyll $ do
             pandocCompiler
                 >>= saveSnapshot "teaser"
                 >>= loadAndApplyTemplate "templates/post.html"    postContext
+                >>= saveSnapshot "content"
+                >>= loadAndApplyTemplate "templates/post-with-pagination.html" postContext
                 >>= loadAndApplyTemplate "templates/default.html" postContext
                 >>= relativizeUrls
 
@@ -111,7 +113,29 @@ main = hakyll $ do
                     >>= relativizeUrls
 
 
+    create ["atom.xml"] $ do
+        route idRoute
+        compile $ do
+            let feedCtx = postCtx `mappend` bodyField "description"
+            posts <- fmap (take 10) . recentFirst =<<
+                loadAllSnapshots postsGlob "content"
+            renderAtom feedConfiguration feedCtx posts
+
+
     match "templates/*" $ compile templateCompiler
+
+
+--------------------------------------------------------------------------------
+-- | RSS feed configuration.
+--
+feedConfiguration :: FeedConfiguration
+feedConfiguration = FeedConfiguration
+    { feedTitle       = "Richard Goulter's Blog"
+    , feedDescription = "RSS feed for Richard Goulter's blog"
+    , feedAuthorName  = "Richard Goulter"
+    , feedAuthorEmail = "richard.goulter+blog@gmail.com"
+    , feedRoot        = "http://www.rgoulter.com/blog/"
+    }
 
 
 --------------------------------------------------------------------------------
