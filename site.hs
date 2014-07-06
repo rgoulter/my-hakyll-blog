@@ -4,6 +4,8 @@ import           Data.Monoid (mappend)
 import           Hakyll
 
 import Data.List (isPrefixOf, tails, findIndex, intercalate, sortBy)
+import Data.Maybe (fromMaybe)
+import Control.Applicative (Alternative (..))
 import Control.Monad (forM_, zipWithM_, liftM)
 import System.FilePath (takeFileName)
 
@@ -55,11 +57,17 @@ main = hakyll $ do
 
     match postsGlob $ do
         route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= saveSnapshot "teaser"
-            >>= loadAndApplyTemplate "templates/post.html"    (postCtxWithTags tags)
-            >>= loadAndApplyTemplate "templates/default.html" (postCtxWithTags tags)
-            >>= relativizeUrls
+        compile $ do 
+            let postContext =
+                    field "nextPost" nextPostUrl `mappend`
+                    field "prevPost" previousPostUrl `mappend`
+                    postCtxWithTags tags
+
+            pandocCompiler
+                >>= saveSnapshot "teaser"
+                >>= loadAndApplyTemplate "templates/post.html"    postContext
+                >>= loadAndApplyTemplate "templates/default.html" postContext
+                >>= relativizeUrls
 
     create ["archive.html"] $ do
         route idRoute
@@ -121,6 +129,44 @@ teaserCtx :: Tags -> Context String
 teaserCtx tags =
     field "teaser" teaserBody `mappend`
     (postCtxWithTags tags)
+
+
+--------------------------------------------------------------------------------
+previousPostUrl :: Item String -> Compiler String
+previousPostUrl post = do
+    posts <- getMatches postsGlob
+    let ident = itemIdentifier post
+        sortedPosts = sortIdentifiersByDate posts
+        ident' = itemBefore sortedPosts ident
+    case ident' of
+        Just i -> (fmap (maybe empty $ toUrl) . getRoute) i
+        Nothing -> empty
+
+
+nextPostUrl :: Item String -> Compiler String
+nextPostUrl post = do
+    posts <- getMatches postsGlob
+    let ident = itemIdentifier post
+        sortedPosts = sortIdentifiersByDate posts
+        ident' = itemAfter sortedPosts ident
+    case ident' of
+        Just i -> (fmap (maybe empty $ toUrl) . getRoute) i
+        Nothing -> empty
+
+
+itemAfter :: Eq a => [a] -> a -> Maybe a
+itemAfter xs x =
+    lookup x $ zip xs (tail xs)
+
+
+itemBefore :: Eq a => [a] -> a -> Maybe a
+itemBefore xs x =
+    lookup x $ zip (tail xs) xs
+
+
+urlOfPost :: Item String -> Compiler String
+urlOfPost =
+    fmap (maybe empty $ toUrl) . getRoute . itemIdentifier
 
 
 --------------------------------------------------------------------------------
@@ -215,6 +261,17 @@ paginate itemsPerPage rules = do
         pageNumbers = take maxIndex [1..]
         process i is = rules i maxIndex is
     zipWithM_ process pageNumbers chunks
+        where
+            byDate id1 id2 =
+                let fn1 = takeFileName $ toFilePath id1
+                    fn2 = takeFileName $ toFilePath id2
+                    parseTime' fn = parseTime defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
+                in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
+
+
+sortIdentifiersByDate :: [Identifier] -> [Identifier]
+sortIdentifiersByDate identifiers =
+    reverse $ sortBy byDate identifiers
         where
             byDate id1 id2 =
                 let fn1 = takeFileName $ toFilePath id1
