@@ -33,6 +33,24 @@ ethercrow/Dmitry Ivanov's Vim2 keymap.
 [See here](https://github.com/yi-editor/yi/pull/554).
 
 
+
+### Editing More Than One File
+`:ls` will show a list of currently open buffers, and
+`:buffer #` will go to that buffer number.
+
+But there isn't a `:bnext`, `:bprev` which my muscle memory uses.  
+(One could add this, right, but I wouldn't know how [See below], as of 2014-07-02).
+
+I've not used
+[arglist](http://vimdoc.sourceforge.net/htmldoc/editing.html#arglist) much,
+but as a mutable subset of buffers list, I've heard it's an improvement over
+aforementioned commands. (That, and some more).  
+There's a [VimCast](http://vimcasts.org/episodes/meet-the-arglist/) on it.  
+Not that I can complain (since I haven't used it in Vim),
+but also not in the keymap.
+
+
+
 ### Line Numbers
 By default Vim doesn't have line numbers on, and to get line numbers on Emacs
 is kindof hackish, I hear.  
