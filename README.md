@@ -1,4 +1,4 @@
-My Hakyll Blog.
+### My Hakyll Blog.
 
 If you found this repo looking for cool things to "borrow", feel free;
 I'd recommend looking at the commits which improved the site rather than
