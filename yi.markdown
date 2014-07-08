@@ -80,7 +80,7 @@ with Vty frontend (terminal), in a terminal with Solarized colors theme.
 ### Command-line Window
 This really shoots at "obscure Vim things", but I'm making a list of
 differences I've noticed. This is the `q:`, `q/`, `q?` window which shows up.
-See [here](http://vimdoc.sourceforge.net/htmldoc/cmdline.html#cmdline-window).
+[Vimdoc:cmdline-window](http://vimdoc.sourceforge.net/htmldoc/cmdline.html#cmdline-window).
 
 (But I'm not sure how commonly this feature is used by Vim folk).
 
@@ -89,12 +89,29 @@ See [here](http://vimdoc.sourceforge.net/htmldoc/cmdline.html#cmdline-window).
 Quickfix is not an obscure feature of Vim. (Though I don't use it as often as
 I should). I'm not sure what Yi's support for Quickfix, or equivalent, is;
 but I haven't looked. (as of 2014-07-02).
-[Vimdoc](http://vimdoc.sourceforge.net/htmldoc/quickfix.html).
+[Vimdoc:quickfix](http://vimdoc.sourceforge.net/htmldoc/quickfix.html).
 
 
 ### Tags
 Yi appears to have some support for tags, which I need to look into.
 (as of 2014-07-02).
+
+
+## Searching
+Yi does have Incremental Searching, and it does this the way Emacs does, which
+is better than Vim.  
+That is, while typing the search, all things which match are highlighted,
+rather than just one entry.
+
+
+# Jumplist
+Yi does appear to have `C-I`, `C-O` for navigating between cursor jumps.  
+The `:ju` Ex command to show the jumplist isn't there.  
+The changelist (`g;`, `g,`) also doesn't appear to be implemented.
+[Vimdoc:jump-motions](http://vimdoc.sourceforge.net/htmldoc/motion.html#jump-motions)
+
+I've also seen `'.` used for "jump to last edit". Yi doesn't have this.  
+[Vimdoc:'.](http://vimdoc.sourceforge.net/htmldoc/motion.html#\'.)
 
 
 # Questions About Yi
