@@ -139,8 +139,31 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
     helloWorld = withBuffer $ insertN "Hello, world!"
     ```
 
+  Unfortunately, this is specifically for the CUA bindings. (Emacs, Vim don't
+  get the equivalent of `customizedCuaKeymapSet`).  
+  Fortunately, there are multiple ways to customize bindings for Vim. See
+  [some notes](/posts/programming/2014-07-07-notes-from-some-examination-of-some-yi-configs.html)
+  on this.
+
 * *How to add in some extra function and bind it to an Ex expression? (e.g. `:helloWorld`).*  
-  Haven't figured that out yet. (as of 2014-07-02).
+  For this example, `:yi helloWorld` will execute `helloWorld :: YiM()`. See
+  [Yi Ex command](https://github.com/yi-editor/yi/blob/master/yi/src/library/Yi/Keymap/Vim/Ex/Commands/Yi.hs).
+
+  It appears that this only works for functions of type `Yim()`, as opposed to
+  `Int -> Yim()` or so. (Or, if possible, it's not as trivial as I'd hope).
+  (as of 2014-07-08).
+
+  If you really want to have an Ex command `:helloWorld`, I suspect this would
+  have code like:
+
+```haskell
+        defaultKM = mkKeymapSet $ defVimConfig `override` \ super self -> super
+            { vimExCommandParsers = myExCmdParsers ++ vimExCommands super }
+```
+
+  where `myExCmdParsers` is of type `[String -> Maybe ExCommand]`, something
+  like `[helloWorldEC.parser, ...]`. None of the samples have a custom
+  Ex command, for what that's worth. (as of 2014-07-08).
 
 * *How to show a list of keybindings, or something else which can show me what Yi can do?*  
   Haven't figured that out yet. (as of 2014-07-02).
