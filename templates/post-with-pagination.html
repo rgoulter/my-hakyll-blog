@@ -1,5 +1,7 @@
 $body$
 
+<hr/>
+
 <div>
     $if(prevPost)$
     <a href="$prevPost$" style="float:left;">Newer post</a>
@@ -9,3 +11,7 @@ $body$
     $endif$
 </div>
 <br style="clear: both;" />
+
+<hr/>
+
+$partial("templates/post-commentsection.html")$
