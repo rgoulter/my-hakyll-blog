@@ -148,25 +148,50 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
 * *How to add in some extra function and bind it to an Ex expression? (e.g. `:helloWorld`).*  
   For this example, `:yi helloWorld` will execute `helloWorld :: YiM()`. See
   [Yi Ex command](https://github.com/yi-editor/yi/blob/master/yi/src/library/Yi/Keymap/Vim/Ex/Commands/Yi.hs).
+  Well. This worked for me when using a Simple config, and when `publishAction`
+  is used. (`publishAction "helloWorld" helloWorld` was enough).  
+  For non-Simple configs, it's not clear how to 'publish' an Action, and trying
+  the same doesn't work. What happens instead is Yi complains about
+  `helloWorld` not being in scope.
+  [Yi.Eval](https://github.com/yi-editor/yi/blob/master/yi/src/library/Yi/Eval.hs)
+  mentions `$HOME/.config/yi/local/Env.hs`. Trying to put my
+  `helloWorld` in here didn't work for me.
 
   It appears that this only works for functions of type `Yim()`, as opposed to
   `Int -> Yim()` or so. (Or, if possible, it's not as trivial as I'd hope).
   (as of 2014-07-08).
 
-  If you really want to have an Ex command `:helloWorld`, I suspect this would
-  have code like:
+  If you really want to have an Ex command `:helloWorld`, then you need to
+  implement an Ex command parser, and your code would look like:
 
 ```haskell
         defaultKM = mkKeymapSet $ defVimConfig `override` \ super self -> super
-            { vimExCommandParsers = myExCmdParsers ++ vimExCommands super }
+            { vimExCommandParsers = myExCmdParsers ++ vimExCommandParsers super }
 ```
 
   where `myExCmdParsers` is of type `[String -> Maybe ExCommand]`, something
-  like `[helloWorldEC.parser, ...]`. None of the samples have a custom
-  Ex command, for what that's worth. (as of 2014-07-08).
+  like `[helloWorldEC.parser, ...]`. While none of the samples have a custom
+  Ex command,
+  [here's](https://gist.github.com/rgoulter/5b291e7d00945661aa71/49bac9d873b885ee54ace67f99a99be53401f588)
+  a simple Hello World example.
+
+* *How can I modularise code I write to customize Yi? e.g. like "source extra-stuff.vim"*  
+  The answer is _not_ to just put it in `~/.config/yi`, alongside `yi.hs`.
+  Bummer.  
+  The README.md on the GitHub site mentions that if running yi in a Cabal
+  sandbox, then one has to use `cabal sandbox add-source`.  
+  I infer, then, that one either has to dump everything in their `yi.hs`, or
+  has to setup a Cabal project where the GHC packages become aware of that.  
+  This might be a more interesting approach if `yi.hs` can be in this Cabal
+  project, too.
 
 * *How to show a list of keybindings, or something else which can show me what Yi can do?*  
-  Haven't figured that out yet. (as of 2014-07-02).
+  Haven't figured that out yet. (as of 2014-07-02).  
+  [yi-editor/yi#504](https://github.com/yi-editor/yi/issues/504) touches upon
+  this issue, with the suggestion of documenting the keybindings (since these
+  don't change at a pace as to make this too awful).  
+  Those with the programming bug, though, would rather have this done
+  'automatically'.
 
 
 # Troubles with Yi
