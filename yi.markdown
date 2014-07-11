@@ -7,7 +7,7 @@ related findings, rather than making tidbit posts about Yi.
 See [posts tagged 'Yi'](/tags/yi.html).
 
 My impression of Yi [hasn't altered much](/posts/programming/2014-06-01-yi.html),
-and I think maybe Yi isn't as Emacs as Emacs, or as kVim as Vim, and perhaps the code
+and I think maybe Yi isn't as Emacs as Emacs, or as Vim as Vim, and perhaps the code
 is limited by that.
 
 It also seems that to work on Yi, one would need to get familiar with its eDSL,
