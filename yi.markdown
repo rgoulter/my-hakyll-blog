@@ -116,7 +116,8 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
 
 # Questions About Yi
 
-*   *How to write in some extra function and bind it with a keymap?*  
+*   *How to write in some extra function and bind it with a keymap?*
+
     The sample user configs have an example of this. e.g.
     [yi-contrib's Amy.hs](https://github.com/yi-editor/yi/blob/master/yi-contrib/src/Yi/Config/Users/Amy.hs),
 
@@ -145,7 +146,8 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
     [some notes](/posts/programming/2014-07-07-notes-from-some-examination-of-some-yi-configs.html)
     on this.
 
-*   *How to add in some extra function and bind it to an Ex expression? (e.g. `:helloWorld`).*  
+*   *How to add in some extra function and bind it to an Ex expression? (e.g. `:helloWorld`).*
+
     For this example, `:yi helloWorld` will execute `helloWorld :: YiM()`. See
     [Yi Ex command](https://github.com/yi-editor/yi/blob/master/yi/src/library/Yi/Keymap/Vim/Ex/Commands/Yi.hs).
     Well. This worked for me when using a Simple config, and when `publishAction`
@@ -175,17 +177,52 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
     [here's](https://gist.github.com/rgoulter/5b291e7d00945661aa71/49bac9d873b885ee54ace67f99a99be53401f588)
     a simple Hello World example.
 
-*   *How can I modularise code I write to customize Yi? e.g. like "source extra-stuff.vim"*  
-    The answer is _not_ to just put it in `~/.config/yi`, alongside `yi.hs`.
-    Bummer.  
-    The README.md on the GitHub site mentions that if running yi in a Cabal
-    sandbox, then one has to use `cabal sandbox add-source`.  
-    I infer, then, that one either has to dump everything in their `yi.hs`, or
-    has to setup a Cabal project where the GHC packages become aware of that.  
-    This might be a more interesting approach if `yi.hs` can be in this Cabal
-    project, too.
+*   *How can I modularise code I write to customize Yi? e.g. like "source extra-stuff.vim"*
 
-*   *How to show a list of keybindings, or something else which can show me what Yi can do?*  
+    The answer is _not_ to just put it in `~/.config/yi`, alongside `yi.hs`.
+    Bummer. I asked about this on
+    [the Google group](https://groups.google.com/forum/#!topic/yi-devel/hYvT2Sz4M3w).
+
+    I was able to get my `yi.hs` to depend on a cabal project by doing:
+
+    ```
+        ~/github/yi/yi$ cabal sandbox add-source /path/to/dependency
+        ~/github/yi/yi$ cabal install dependency-name
+    ```
+
+    where `~/github/yi/yi` is the location of my Yi sandbox. (Well, I've opted
+    to use a Cabal sandbox for my Yi to avoid Cabal Hell).  
+    When the dependency is updated, to register this with Yi I'd need to
+
+    ```
+        ~/github/yi/yi$ cabal install dependency-name and-things-which-depend-on-it
+        ~/github/yi/yi$ touch ~/.config/yi.hs
+    ```
+
+    i.e. re-install the package to the cabal sandbox for yi, and then 'modify'
+    the yi.hs file so that Yi will re-compile (and thus know about the updated
+    dependency). "dependency" here, btw, could mean things like plugin, or
+    aspects of a `yi.hs` which you'd rather have split up into different `.hs`
+    files.
+
+    If there are many such dependencies for your `yi.hs`, it may make sense
+    to have a cabal package like `yi-config-rgoulter`; if this acts as the 
+    'root' of your yi dependencies, then it means you'd only need to deal with
+    installing this package. (Well, and adding the sources for the other
+    dependencies, but a package typically updates more often than it's moved).
+
+    At the extreme, you could have a one-liner `yi.hs` like:
+
+    ```haskell
+        import Yi.Config.Rgoulter
+    ```
+
+    because of how Haskell's packages work; the disadvantage of *that* is the
+    need to constantly install `yi-config-rgoulter` as it updates, in contrast
+    to just having Yi recompile a modified `yi.hs`.
+
+*   *How to show a list of keybindings, or something else which can show me what Yi can do?*
+
     Haven't figured that out yet. (as of 2014-07-02).  
     [yi-editor/yi#504](https://github.com/yi-editor/yi/issues/504) touches upon
     this issue, with the suggestion of documenting the keybindings (since these
