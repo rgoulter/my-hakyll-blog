@@ -233,11 +233,19 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
 
 # Troubles with Yi
 
-*   For some reason, with
+*   <s>For some reason, with
     [this config](https://github.com/rgoulter/dotfiles/blob/28b9712fc66c84121eed82113ab61c66b7d699f3/yi.hs),
     when I tried playing around with Vim macros, it didn't go well.  
     e.g. if I tried recording a macro by `qt^x$xq`, then print out this register
     `t`, what I get is `t^xx$xx`. (i.e. the keys appear to have been pressed twice).
-    Something to look into. (This was with commit
-    [e0e39f](https://github.com/yi-editor/yi/commit/e0e39fb0e305a370f301c1e12cb28b9c13340029),
-    as of 2014-07-02).
+    Something to look into.</s>
+    [Not any more!](https://github.com/yi-editor/yi/issues/566).  
+    (By "look into", I clearly meant, "try tests and report as a bug"..).
+
+*   Not particularly a bug, but: since Yi is Emacs-like, `<Esc>` is treated as
+    the Meta key, and when (using a Vim keymap) in Insert mode, one presses
+    Escape quickly followed by another letter (e.g. Escape, then j), it
+    gets handled as `<M-j>` rather than `<Esc>j`.  
+    I imagine some people might take advantage of this to allow for different
+    insert-mode inputs. (Probably using `<Alt>` as meta).  
+    I also imagine it's possible to configure this behaviour in a `yi.hs`.
