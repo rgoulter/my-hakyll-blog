@@ -103,6 +103,7 @@ is better than Vim.
 That is, while typing the search, all things which match are highlighted,
 rather than just one entry.
 
+![](http://i.imgur.com/QE5fNXu.png)
 
 ## Jumplist
 Yi does appear to have `C-I`, `C-O` for navigating between cursor jumps.  
@@ -249,3 +250,25 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
     I imagine some people might take advantage of this to allow for different
     insert-mode inputs. (Probably using `<Alt>` as meta).  
     I also imagine it's possible to configure this behaviour in a `yi.hs`.
+
+
+
+<!-- disqus comment section -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'richardgoultersblog'; // required: replace example with your forum shortname
+    var disqus_identifier = '$url$';
+    var disqus_url = 'http://www.rgoulter.com/blog' + '$url$';
+    var disqus_title = '$title$';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
