@@ -63,7 +63,23 @@ I haven't seen any screenshot of Yi with line numbers.
 ### Visual Mode
 One of the cool things about Visual mode is the insertion/appending on multiple lines.  
 See [the vim docs](http://vimdoc.sourceforge.net/htmldoc/visual.html#v_b_I).
-The vim wiki [has some examples](http://vim.wikia.com/wiki/Inserting_text_in_multiple_lines).
+The vim wiki
+[has some examples](http://vim.wikia.com/wiki/Inserting_text_in_multiple_lines).  
+Yi now does this better than Vim (as far as I can tell); where Vim only has
+this multi-line insert for block mode, Yi supports the feature for linewise
+visual mode as well. And, Yi's multi-cursor insert writes things "live",
+whereas Vim's is delayed.
+[Brag](https://github.com/yi-editor/yi/commit/caa06cadbdbd140dc837e042c89a972323386671).
+(The caveat is that Yi's block mode is slightly different. In theory it ought
+to work for standard visual mode, I suppose; examine the diff of that commit to
+see how, but like, visual mode seems to be for other things).
+
+That Yi's Vim keymap supports multiple cursors like this implies a multiple
+cursors feature are supported out-of-the-box (which doesn't appear to be the
+case with a grok at the source), or that it should be reasonably
+straightforward to add a plugin like
+[terryma/vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
+(in the style of Sublime Text).
 
 I took a screenshot of Vim and of Yi for comparison about what their Visual
 Lines modes look like:
@@ -196,11 +212,11 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
     When the dependency is updated, to register this with Yi I'd need to
 
     ```
-        ~/github/yi/yi$ cabal install dependency-name and-things-which-depend-on-it
+        ~/github/yi/yi$ cabal build
         ~/github/yi/yi$ touch ~/.config/yi.hs
     ```
 
-    i.e. re-install the package to the cabal sandbox for yi, and then 'modify'
+    i.e. get Cabal to rebuild its dependencies, and then 'modify'
     the yi.hs file so that Yi will re-compile (and thus know about the updated
     dependency). "dependency" here, btw, could mean things like plugin, or
     aspects of a `yi.hs` which you'd rather have split up into different `.hs`
@@ -219,8 +235,11 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
     ```
 
     because of how Haskell's packages work; the disadvantage of *that* is the
-    need to constantly install `yi-config-rgoulter` as it updates, in contrast
+    need to constantly `cabal build` as it updates, in contrast
     to just having Yi recompile a modified `yi.hs`.
+
+    I still need to investigate some more about development in such a
+    dependency, especially with (say) a shared Cabal Sandbox.
 
 *   *How to show a list of keybindings, or something else which can show me what Yi can do?*
 
