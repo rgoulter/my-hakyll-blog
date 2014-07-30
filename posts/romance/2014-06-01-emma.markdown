@@ -6,7 +6,7 @@ layout: post
 slug: emma
 title: Emma
 wordpress_id: 235
-tags: narrative, analysis
+tags: narrative, analysis, emma, emma approved
 ---
 
 I stumbled across "Emma Approved" during the season of procrastination.
