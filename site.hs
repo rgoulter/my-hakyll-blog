@@ -19,19 +19,34 @@ import Text.Blaze.Internal (preEscapedString)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
--- for tags, follow tutorial from:
--- http://javran.github.io/posts/2014-03-01-add-tags-to-your-hakyll-blog.html
+data Blog = Blog { blogPostsGlob :: Pattern
+                 , blogPrefix :: String
+                 }
+
+cs3216Blog :: Blog
+cs3216Blog = Blog { blogPostsGlob = "posts/cs3216/*.markdown"
+                  , blogPrefix = "cs3216/"
+                  }
+
+personalBlog :: Blog
+personalBlog = Blog { blogPostsGlob = "posts/**.markdown"
+                    , blogPrefix = "blog/"
+                    }
 
 -- Glob for matching the *.markdown posts under subdirectories of /posts/<category>/
-postsGlob :: Pattern
-postsGlob = "posts/**.markdown"
+-- postsGlob :: Pattern
+-- postsGlob = "posts/**.markdown"
 
-blogPageForPageIdx :: Int -> String
-blogPageForPageIdx index = (if index==1 then "" else show index ++ "/") ++ "index.html"
+blogPageForPageIdx :: Blog -> Int -> String
+blogPageForPageIdx blog index = (blogPrefix blog) ++
+                                (if index==1 then "" else show index ++ "/") ++
+                                "index.html"
 
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
+    match "templates/*" $ compile templateCompiler
+
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
@@ -40,89 +55,98 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
+    -- page about yi, which is specific to the personal blog.
     match (fromList ["yi.markdown"]) $ do
-        route   $ setExtension "html"
+        route   $ prefixRouteWith "blog/" `composeRoutes` setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
-    -- build up tags
-    tags <- buildTags postsGlob (fromCapture "tags/*.html")
+    -- Per blog, buildup tags, categories, paginated list of posts, posts, etc.
+    forM_ [cs3216Blog, personalBlog] $ \ blog -> do
+        let postsGlob = blogPostsGlob blog
+            blogRoute = prefixRouteWith $ blogPrefix blog
 
-    categories <- buildCategories postsGlob (fromCapture "categories/*.html")
+        -- build up tags
+        tags <- buildTags postsGlob (fromCapture "tags/*.html")
 
-    rulesForTags categories (\tag -> "Posts in category \"" ++ tag ++ "\"")
+        categories <- buildCategories postsGlob (fromCapture "categories/*.html")
 
-    rulesForTags tags (\tag -> "Posts tagged \"" ++ tag ++ "\"")
+        rulesForTags blog categories (\tag -> "Posts in category \"" ++ tag ++ "\"")
 
-    match postsGlob $ do
-        route $ setExtension "html"
-        compile $ do 
-            let postContext =
-                    field "nextPost" nextPostUrl `mappend`
-                    field "prevPost" previousPostUrl `mappend`
-                    postCtxWithTags tags
+        rulesForTags blog tags (\tag -> "Posts tagged \"" ++ tag ++ "\"")
 
-            pandocCompiler
-                >>= saveSnapshot "teaser"
-                >>= loadAndApplyTemplate "templates/post.html"    postContext
-                >>= saveSnapshot "content"
-                >>= loadAndApplyTemplate "templates/post-with-pagination.html" postContext
-                >>= loadAndApplyTemplate "templates/default.html" postContext
-                >>= relativizeUrls
+        match postsGlob $ do
+            route $ blogRoute `composeRoutes` setExtension "html"
+            compile $ do 
+                let postContext =
+                        field "nextPost" (nextPostUrl blog) `mappend`
+                        field "prevPost" (previousPostUrl blog) `mappend`
+                        postCtxWithTags tags
 
-    create ["archive.html"] $ do
-        route idRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll postsGlob
-            let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
-                    defaultContext
+                pandocCompiler
+                    >>= saveSnapshot "teaser"
+                    >>= loadAndApplyTemplate "templates/post.html"    postContext
+                    >>= saveSnapshot "content"
+                    >>= loadAndApplyTemplate "templates/post-with-pagination.html" postContext
+                    >>= loadAndApplyTemplate "templates/default.html" postContext
+                    >>= relativizeUrls
 
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-                >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-                >>= relativizeUrls
-
-
-    paginate 5 $ \index maxIndex itemsForPage -> do
-        let id = fromFilePath $ blogPageForPageIdx index
-        create [id] $ do
-            route idRoute
+        create ["archive.html"] $ do
+            route blogRoute
             compile $ do
-                let allCtx =
-                        field "title" (\_ -> return "Blog") `mappend`
+                posts <- recentFirst =<< loadAll postsGlob
+                let archiveCtx =
+                        listField "posts" postCtx (return posts) `mappend`
+                        constField "title" "Archives"            `mappend`
                         defaultContext
-                    loadTeaser id = loadSnapshot id "teaser"
-                                        >>= loadAndApplyTemplate "templates/teaser.html" (teaserCtx tags)
-                                        -- >>= relativizeUrls
-                items <- sequence $ map loadTeaser itemsForPage
-                let itembodies = map itemBody items
-                    postsCtx =
-                        constField "posts" (concat itembodies) `mappend`
-                        field "navlinkolder" (\_ -> return $ indexNavLink index 1 maxIndex) `mappend`
-                        field "navlinknewer" (\_ -> return $ indexNavLink index (-1) maxIndex) `mappend`
-                        tagCloudField "taglist" 80 200 tags `mappend`
-                        field "categorylist" (\_ -> renderTagListLines categories) `mappend`
-                        defaultContext
- 
+
                 makeItem ""
-                    >>= loadAndApplyTemplate "templates/blogpage.html" postsCtx
-                    >>= loadAndApplyTemplate "templates/default.html" allCtx
+                    >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
+                    >>= loadAndApplyTemplate "templates/default.html" archiveCtx
                     >>= relativizeUrls
 
 
-    create ["atom.xml"] $ do
-        route idRoute
-        compile $ do
-            let feedCtx = postCtx `mappend` bodyField "description"
-            posts <- fmap (take 10) . recentFirst =<<
-                loadAllSnapshots postsGlob "content"
-            renderAtom feedConfiguration feedCtx posts
+        paginate blog 5 $ \index maxIndex itemsForPage -> do
+            let id = fromFilePath $ blogPageForPageIdx blog index
+            create [id] $ do
+                route idRoute
+                compile $ do
+                    let allCtx =
+                            field "title" (\_ -> return "Blog") `mappend`
+                            defaultContext
+                        loadTeaser id = loadSnapshot id "teaser"
+                                            >>= loadAndApplyTemplate "templates/teaser.html" (teaserCtx tags)
+                                            -- >>= relativizeUrls
+                    items <- sequence $ map loadTeaser itemsForPage
+                    let itembodies = map itemBody items
+                        postsCtx =
+                            constField "posts" (concat itembodies) `mappend`
+                            field "navlinkolder" (\_ -> return $ indexNavLink blog index 1 maxIndex) `mappend`
+                            field "navlinknewer" (\_ -> return $ indexNavLink blog index (-1) maxIndex) `mappend`
+                            tagCloudField "taglist" 80 200 tags `mappend`
+                            field "categorylist" (\_ -> renderTagListLines categories) `mappend`
+                            defaultContext
+     
+                    makeItem ""
+                        >>= loadAndApplyTemplate "templates/blogpage.html" postsCtx
+                        >>= loadAndApplyTemplate "templates/default.html" allCtx
+                        >>= relativizeUrls
 
 
-    match "templates/*" $ compile templateCompiler
+        create ["atom.xml"] $ do
+            route blogRoute
+            compile $ do
+                let feedCtx = postCtx `mappend` bodyField "description"
+                posts <- fmap (take 10) . recentFirst =<<
+                    loadAllSnapshots postsGlob "content"
+                renderAtom feedConfiguration feedCtx posts
+
+
+--------------------------------------------------------------------------------
+prefixRouteWith :: String -> Routes
+prefixRouteWith s =
+    customRoute ((\x -> s ++ x) . toFilePath)
 
 
 --------------------------------------------------------------------------------
@@ -156,9 +180,9 @@ teaserCtx tags =
 
 
 --------------------------------------------------------------------------------
-previousPostUrl :: Item String -> Compiler String
-previousPostUrl post = do
-    posts <- getMatches postsGlob
+previousPostUrl :: Blog -> Item String -> Compiler String
+previousPostUrl blog post = do
+    posts <- getMatches $ blogPostsGlob blog
     let ident = itemIdentifier post
         sortedPosts = sortIdentifiersByDate posts
         ident' = itemBefore sortedPosts ident
@@ -167,9 +191,9 @@ previousPostUrl post = do
         Nothing -> empty
 
 
-nextPostUrl :: Item String -> Compiler String
-nextPostUrl post = do
-    posts <- getMatches postsGlob
+nextPostUrl :: Blog -> Item String -> Compiler String
+nextPostUrl blog post = do
+    posts <- getMatches $ blogPostsGlob blog
     let ident = itemIdentifier post
         sortedPosts = sortIdentifiersByDate posts
         ident' = itemAfter sortedPosts ident
@@ -194,11 +218,11 @@ urlOfPost =
 
 
 --------------------------------------------------------------------------------
-rulesForTags :: Tags -> (String -> String) -> Rules ()
-rulesForTags tags titleForTag =
+rulesForTags :: Blog -> Tags -> (String -> String) -> Rules ()
+rulesForTags blog tags titleForTag =
     tagsRules tags $ \tag pattern -> do
     let title = titleForTag tag -- "Posts tagged \"" ++ tag ++ "\""
-    route idRoute
+    route $ prefixRouteWith $ blogPrefix blog
     compile $ do
         posts <- recentFirst =<< loadAll pattern
         let ctx = constField "title" title
@@ -264,20 +288,20 @@ teaserBody item = do
 -- | Generate navigation link HTML for stepping between index pages.
 -- https://github.com/ian-ross/blog
 --
-indexNavLink :: Int -> Int -> Int -> String
-indexNavLink n d maxn = renderHtml ref
+indexNavLink :: Blog -> Int -> Int -> Int -> String
+indexNavLink blog n d maxn = renderHtml ref
   where ref = if (refPage == "") then ""
               else H.a ! A.href (toValue $ toUrl $ refPage) $ 
                    (preEscapedString lab)
         lab = if (d > 0) then "Older Entries &raquo;" else "&laquo; Newer Entries"
         refPage = if (n + d < 1 || n + d > maxn) then ""
-                  else blogPageForPageIdx (n + d)
+                  else blogPageForPageIdx blog (n + d)
 
 
 --------------------------------------------------------------------------------
-paginate:: Int -> (Int -> Int -> [Identifier] -> Rules ()) -> Rules ()
-paginate itemsPerPage rules = do
-    identifiers <- getMatches postsGlob
+paginate:: Blog -> Int -> (Int -> Int -> [Identifier] -> Rules ()) -> Rules ()
+paginate blog itemsPerPage rules = do
+    identifiers <- getMatches $ blogPostsGlob blog
 
     let sorted = reverse $ sortBy byDate identifiers
         chunks = chunk itemsPerPage sorted
@@ -306,7 +330,6 @@ sortIdentifiersByDate identifiers =
 
 --------------------------------------------------------------------------------
 -- | Render a simple tag list in HTML, with the tag count next to the item
--- TODO: Maybe produce a Context here
 renderTagListLines :: Tags -> Compiler (String)
 renderTagListLines = renderTags makeLink (intercalate ",<br>")
   where
