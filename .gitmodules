@@ -1,0 +1,3 @@
+[submodule "posts"]
+	path = posts
+	url = git@github.com:rgoulter/my-blog-posts.git
