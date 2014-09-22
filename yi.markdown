@@ -4,7 +4,10 @@ title: Yi
 
 I thought it might make sense to have a page where I can dump all my Yi
 related findings, rather than making tidbit posts about Yi.  
-See [posts tagged 'Yi'](/tags/yi.html).
+See [posts tagged 'Yi'](/tags/yi.html).  
+(NOTE: 22/09/14: I haven't taken the time to really look into Yi as intensely
+ as I have been earlier. Some of the info below may be out of date. Feel free
+ to email me, richard.goulter@gmail.com).
 
 My impression of Yi [hasn't altered much](/posts/programming/2014-06-01-yi.html),
 and I think maybe Yi isn't as Emacs as Emacs, or as Vim as Vim, and perhaps the code
@@ -200,6 +203,19 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
     Bummer. I asked about this on
     [the Google group](https://groups.google.com/forum/#!topic/yi-devel/hYvT2Sz4M3w).
 
+    UPDATE: (22/09/14): I recently got an email from a Siddhanathan Shanmugam
+    who suggsted to me that dependencies could be put into `~/.config/yi/lib`
+    folder. This works very well. e.g. if we adapt the HelloWorld example
+    above, we can put `HelloWorld.hs` in `~/.config/yi/lib/` and can import it
+    from `yi.hs`.
+    [(Gist)](https://gist.github.com/rgoulter/5b291e7d00945661aa71/d1a503b756a2abb7a1835c310f58f98863b4fd94).  
+    I guess that's a
+    [Dyre thing](https://github.com/willdonnelly/dyre/blob/9d4ab20cdfea10735b7cc47e917214b60d0ee87c/Config/Dyre/Paths.hs).
+    Cool.
+
+    Before learning that, the workaround was to try and cabalize some portion
+    of the config, and add treat that like some other dependency..
+
     I was able to get my `yi.hs` to depend on a cabal project by doing:
 
     ```
@@ -270,7 +286,18 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
     insert-mode inputs. (Probably using `<Alt>` as meta).  
     I also imagine it's possible to configure this behaviour in a `yi.hs`.
 
+* * * 
 
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+<img alt="Creative Commons License" style="border-width:0"
+     src="https://i.creativecommons.org/l/by/4.0/88x31.png" />
+</a><br />
+This work is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+Creative Commons Attribution 4.0 International License
+</a>.  
+
+* * *
 
 <!-- disqus comment section -->
 <div id="disqus_thread"></div>
