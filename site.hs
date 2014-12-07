@@ -55,12 +55,15 @@ main = hakyll $ do
 
     rulesForTags tags (\tag -> "Posts tagged \"" ++ tag ++ "\"")
 
+    allPosts <- getMatches postsGlob
+    let sortedPosts = sortIdentifiersByDate allPosts
+
     match postsGlob $ do
         route $ setExtension "html"
         compile $ do 
             let postContext =
-                    field "nextPost" nextPostUrl `mappend`
-                    field "prevPost" previousPostUrl `mappend`
+                    field "nextPost" (nextPostUrl sortedPosts) `mappend`
+                    field "prevPost" (previousPostUrl sortedPosts) `mappend`
                     postCtxWithTags tags
 
             pandocCompiler
@@ -156,22 +159,18 @@ teaserCtx tags =
 
 
 --------------------------------------------------------------------------------
-previousPostUrl :: Item String -> Compiler String
-previousPostUrl post = do
-    posts <- getMatches postsGlob
+previousPostUrl :: [Identifier] -> Item String -> Compiler String
+previousPostUrl sortedPosts post = do
     let ident = itemIdentifier post
-        sortedPosts = sortIdentifiersByDate posts
         ident' = itemBefore sortedPosts ident
     case ident' of
         Just i -> (fmap (maybe empty $ toUrl) . getRoute) i
         Nothing -> empty
 
 
-nextPostUrl :: Item String -> Compiler String
-nextPostUrl post = do
-    posts <- getMatches postsGlob
+nextPostUrl :: [Identifier] -> Item String -> Compiler String
+nextPostUrl sortedPosts post = do
     let ident = itemIdentifier post
-        sortedPosts = sortIdentifiersByDate posts
         ident' = itemAfter sortedPosts ident
     case ident' of
         Just i -> (fmap (maybe empty $ toUrl) . getRoute) i
