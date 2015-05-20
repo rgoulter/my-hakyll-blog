@@ -9,8 +9,7 @@ import Control.Applicative (Alternative (..))
 import Control.Monad (forM_, zipWithM_, liftM)
 import System.FilePath (takeFileName)
 
-import Data.Time.Format (parseTime)
-import System.Locale (defaultTimeLocale)
+import Data.Time.Format (parseTimeM, defaultTimeLocale)
 import Data.Time.Clock (UTCTime)
 
 import Text.Blaze.Html.Renderer.String (renderHtml)
@@ -288,7 +287,7 @@ paginate itemsPerPage rules = do
             byDate id1 id2 =
                 let fn1 = takeFileName $ toFilePath id1
                     fn2 = takeFileName $ toFilePath id2
-                    parseTime' fn = parseTime defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
+                    parseTime' fn = parseTimeM True defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
                 in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
 
 
@@ -299,7 +298,7 @@ sortIdentifiersByDate identifiers =
             byDate id1 id2 =
                 let fn1 = takeFileName $ toFilePath id1
                     fn2 = takeFileName $ toFilePath id2
-                    parseTime' fn = parseTime defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
+                    parseTime' fn = parseTimeM True defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
                 in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
 
 
