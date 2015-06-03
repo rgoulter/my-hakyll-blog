@@ -169,6 +169,15 @@ EVIL mode wiki page above mentions various: MELPA, Marmelaide, QUELPA, el-get, e
 [ELPA wiki page is enlighening](http://www.emacswiki.org/emacs/ELPA). 'ELPA' is a 'Package Archive' from which you download plugins. 'QUELPA' is the build-it-from-source-on-your-machine alternative.  
 And then issues regarding whether the repository is 'free' software or not, etc.
 
+* [req-package](https://github.com/edvorg/req-package), which builds on top of  
+  [use-package](https://github.com/jwiegley/use-package) look promising for this.  
+
+* Relevant S/O question: [What package manager should I
+  use](http://stackoverflow.com/questions/24867376/what-package-manager-should-i-use-for-emacs).  
+  Author points out i) there're also some good customisations to Emacs which
+  aren't necessarily in a "package". ii) it's good to have an understanding of
+  what's going on, rather than blindly using `package.el`, etc.
+
 # Recommended List of Plugins
 
 I've not searched too extensively for this. So.
@@ -176,6 +185,11 @@ I've not searched too extensively for this. So.
 But, naturally, since the trend at some point in the programming world was for
 "awesome" lists, it's hardly surprising there's an
 [awesome-emacs](https://github.com/emacs-tw/awesome-emacs).
+
+That's a pretty comprehensive list. ['My Answer Two What Are Some Must Have
+Emacs
+Additions'](blog.binchen.org/posts/my-answer-to-what-are-some-must-have-emacs-additions-on-quora-com.html)
+mentions some of these; but, on the other hand, doesn't mention alternatives.
 
 # Emacs Tutor
 
@@ -197,3 +211,11 @@ So, here are a couple of links to Org mode tutorials:
 * [http://orgmode.org/worg/org-tutorials/org4beginners.html](http://orgmode.org/worg/org-tutorials/org4beginners.html)
 
 * [https://emacsclub.github.io/html/org_tutorial.html](https://emacsclub.github.io/html/org_tutorial.html)
+
+# Emacs.Sexy
+
+[emacs.sexy](http://emacs.sexy/).  
+It has to be said. Much less amusing/fun than [vim.sexy](vim.sexy), which is
+quite contemptuous and scathing (just like CS people in general!).
+Anyway. emacs.sexy is a cute-sy, fancily designed webpage with some great
+resources for beginners. Kindof like a better version of this page, in a way.
