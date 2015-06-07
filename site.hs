@@ -42,6 +42,7 @@ main = hakyll $ do
     match (fromList ["yi.markdown", "emacs.markdown"]) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
+            >>= loadAndApplyTemplate "templates/content-page.html" defaultContext
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 

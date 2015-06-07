@@ -3,8 +3,9 @@
 This is my page for Emacs stuff.
 Because [Yi](yi.html) gets one.
 
-## Motivation. (No, Emacs vs Vim Doesn't Matter).
+## Motivation
 
+No, Emacs vs Vim Doesn't Matter.  
 I'm a Vim user. (I might make analogies to Vim / vim community throughout.
 That's what I understand).
 Obviously, what editor you use doesn't matter. But which editor is better to
@@ -78,7 +79,7 @@ pretending to have skills they dont' have":
 > users, I prefer to see Lisp hackers in this space, so we actually get better
 > quality throughout.
 
-# Sacha Chua's Visual Guide to Emacs
+# Sacha Chua's Visual Guide
 
 [http://sachachua.com/blog/series/a-visual-guide-to-emacs/](http://sachachua.com/blog/series/a-visual-guide-to-emacs/)  
 This is very cute, utterly fantastic.  
