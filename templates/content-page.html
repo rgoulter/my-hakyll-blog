@@ -1,0 +1,19 @@
+<!--
+contentpage.html, for content-specific pages, like emacs.html/yi.html.
+-->
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" ></script>
+
+<div id="page-content" style="float: left; width: 70%;">$body$</div>
+<div style="float: right; width: 30%;"><div id="toc"></div></div>
+<div style="clear: both;"></div>
+
+<script>
+  //Executes your code when the DOM is ready.  Acts the same as (document).ready().
+  $$(function() {
+      //Calls the tocify method on your HTML div.
+      $$("#toc").tocify({context: "#page-content", selectors: "h1, h2, h3"});
+  });
+</script>
