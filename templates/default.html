@@ -21,15 +21,23 @@
 
         <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/stylesheets/jquery.tocify.min.css" />
+
+        <style>
+        .navbar {
+            margin-bottom:0;
+        }
+
+        .banner {
+            width:100%;
+        }
+        </style>
     </head>
     <body>
         <div id="page" class="container">
             <!-- From http://stackoverflow.com/questions/18682465/bootstrap-3-fixed-responsive-navbar-in-container-without-background-color-at -->
             <div id="fixme">
                 $partial("templates/nav.html")$
-            <div>
-                <img src="/images/blog-banner.png" />
-            </div>
+                <img class="banner" src="/images/blog-banner.png" />
             </div>
 
 
