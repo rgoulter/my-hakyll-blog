@@ -1,27 +1,29 @@
-<div id="primary">
-    <div class="inside">
-        $posts$
+<div class="row">
+  <div class="col-md-9" id="primary">
+      <div class="inside">
+          $posts$
 
-        <div id="navlinks">
-            <div class="story" style="float:left;">
-                $navlinknewer$&nbsp;
-            </div>
-            <div class="story" style="float:right; text-align:right;">
-                $navlinkolder$&nbsp;
-            </div>
-        </div>
-    </div>
+          <div id="navlinks">
+              <div class="story" style="float:left;">
+                  $navlinknewer$&nbsp;
+              </div>
+              <div class="story" style="float:right; text-align:right;">
+                  $navlinkolder$&nbsp;
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="col-md-3" id="secondary">
+      <h3>Categories</h3>
+      $categorylist$
+
+      <h3>Tags</h3>
+      $taglist$
+  </div>
 </div>
 
-<div id="secondary">
-    <h3>Categories</h3>
-    $categorylist$
-
-    <h3>Tags</h3>
-    $taglist$
-</div>
-
-<br style="clear: both;" />
+<!-- <br style="clear: both;" /> -->
 
 <!-- For Disqus comment counts -->
 <script type="text/javascript">
@@ -35,4 +37,4 @@
         s.src = '//' + disqus_shortname + '.disqus.com/count.js';
         (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
     }());
-    </script>
+</script>
