@@ -1,27 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE HTML>
+<html lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Richard Goulter's Blog - $title$</title>
-        <link rel="stylesheet" type="text/css" href="/css/default.css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>$title$ - Richard Goulter's Blog</title>
+
+        <!-- My (Old) CSS theme -->
+        <!-- <link rel="stylesheet" type="text/css" href="/css/default.css" /> -->
+
+        <!-- Pandoc Style CSS -->
         <link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+
+        <!-- Bootstrap from CDN -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
         <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/stylesheets/jquery.tocify.min.css" />
     </head>
     <body>
-        <div id="page">
-            <div id="header">
-                <div id="logo">
-                    <a href="/">Richard Goulter's Blog</a>
-                </div>
-                <div id="navigation">
-                    <a href="/">Home</a>
-                    <a href="/yi.html">Yi</a>
-                    <a href="/emacs.html">Emacs</a>
-                    <a href="/archive.html">Archive</a>
-                </div>
+        <div id="page" class="container">
+            <!-- From http://stackoverflow.com/questions/18682465/bootstrap-3-fixed-responsive-navbar-in-container-without-background-color-at -->
+            <div id="fixme">
+                $partial("templates/nav.html")$
             <div>
                 <img src="/images/blog-banner.png" />
             </div>
