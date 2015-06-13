@@ -1,101 +1,21 @@
-/* Adapted from the "twentyeleven" wordpress theme I was using on my blog. */
-body {
-    color: black;
-    background: #e2e2e2;
-    font: 15px "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    padding-left: 0;
-    padding-right: 0;
-}
-
-#page {
-    background: #fff;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 1000px;
-}
-
-div#header {
-    padding: 12px 0px 0px 0px;
-}
-
-div#header img {
-    border-bottom: 5px solid black;
-    margin-top: 12px;
-    margin-bottom: 0px;
-}
-
-div#logo {
-    margin-left: 3em;
-}
-
-div#logo a {
-    color: black;
-    float: left;
-    font-size: 18px;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-div#header #navigation {
+div .banner .nav {
     text-align: right;
-    margin-right: 3em;
 }
 
-div#header #navigation a {
-    color: black;
-    font-size: 18px;
-    font-weight: bold;
-    margin-left: 12px;
+div .banner .nav a {
     text-decoration: none;
     text-transform: uppercase;
 }
 
-div#content {
-    margin-left: 3em;
-    margin-right: 3em;
-    margin-bottom: 0em;
-}
-
 div#footer {
-    clear: both;
-}
-
-div#footer {
-    border-top: solid 2px black;
     color: #555;
     font-size: 12px;
-    margin-top: 30px;
-    padding: 12px 3em 12px 0px;
     text-align: right;
-}
-
-div#primary {
-    float: left;
-    width: 80%;
-}
-
-div#secondary {
-    float: right;
-    /* margin-right: 7.6%; */
-    width: 18.8%;
-}
-
-div#navlinks {
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-h1 {
-    font-size: 24px;
-}
-
-h2 {
-    font-size: 20px;
 }
 
 div.info {
     color: #555;
     font-size: 14px;
     font-style: italic;
+    margin-bottom: 15px;
 }
