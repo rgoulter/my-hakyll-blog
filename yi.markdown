@@ -304,9 +304,9 @@ Creative Commons Attribution 4.0 International License
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'richardgoultersblog'; // required: replace example with your forum shortname
-    var disqus_identifier = '$url$';
-    var disqus_url = 'http://www.rgoulter.com/blog' + '$url$';
-    var disqus_title = '$title$';
+    var disqus_identifier = 'yi.html';
+    var disqus_url = 'http://www.rgoulter.com/blog/yi.html';
+    var disqus_title = 'Yi - RGoulters Notes';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {
