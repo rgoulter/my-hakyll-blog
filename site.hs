@@ -18,6 +18,9 @@ import Text.Blaze.Internal (preEscapedString)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
+import Data.Hashable (Hashable, hashWithSalt)
+import qualified Data.HashMap.Strict as HM
+
 -- for tags, follow tutorial from:
 -- http://javran.github.io/posts/2014-03-01-add-tags-to-your-hakyll-blog.html
 
@@ -61,13 +64,15 @@ main = hakyll $ do
 
     allPosts <- getMatches postsGlob
     let sortedPosts = sortIdentifiersByDate allPosts
+        -- build hashmap of prev/next posts
+        (prevPostHM, nextPostHM) = buildAdjacentPostsHashMap sortedPosts
 
     match postsGlob $ do
         route $ setExtension "html"
         compile $ do
             let postContext =
-                    field "nextPost" (nextPostUrl sortedPosts) `mappend`
-                    field "prevPost" (previousPostUrl sortedPosts) `mappend`
+                    field "nextPost" (lookupPostUrl nextPostHM) `mappend`
+                    field "prevPost" (lookupPostUrl prevPostHM) `mappend`
                     postCtxWithTags tags
 
             pandocCompiler
@@ -163,6 +168,33 @@ teaserCtx tags =
 
 
 --------------------------------------------------------------------------------
+type AdjPostHM = HM.HashMap Identifier Identifier
+
+instance Hashable Identifier where
+    hashWithSalt salt id = hashWithSalt salt (show id)
+
+
+buildAdjacentPostsHashMap :: [Identifier] -> (AdjPostHM, AdjPostHM)
+buildAdjacentPostsHashMap posts =
+    let buildHM :: [Identifier] -> [Identifier] -> AdjPostHM
+        buildHM [] _ = HM.empty
+        buildHM _ [] = HM.empty
+        buildHM (k:ks) (v:vs) = HM.insert k v $ buildHM ks vs
+    in
+    (buildHM (tail posts) posts, buildHM posts (tail posts))
+
+
+lookupPostUrl :: AdjPostHM -> Item String -> Compiler String
+lookupPostUrl hm post =
+    let ident = itemIdentifier post
+        ident' = HM.lookup ident hm
+    in
+    -- I'm sure there's a cleaner way of writing this.
+    case ident' of
+        Just i -> (fmap (maybe empty $ toUrl) . getRoute) i
+        Nothing -> empty
+
+
 previousPostUrl :: [Identifier] -> Item String -> Compiler String
 previousPostUrl sortedPosts post = do
     let ident = itemIdentifier post
