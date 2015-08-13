@@ -64,7 +64,7 @@ main = hakyll $ do
 
     match postsGlob $ do
         route $ setExtension "html"
-        compile $ do 
+        compile $ do
             let postContext =
                     field "nextPost" (nextPostUrl sortedPosts) `mappend`
                     field "prevPost" (previousPostUrl sortedPosts) `mappend`
@@ -113,7 +113,7 @@ main = hakyll $ do
                         tagCloudField "taglist" 80 200 tags `mappend`
                         field "categorylist" (\_ -> renderTagListLines categories) `mappend`
                         defaultContext
- 
+
                 makeItem ""
                     >>= loadAndApplyTemplate "templates/blogpage.html" postsCtx
                     >>= loadAndApplyTemplate "templates/default.html" allCtx
@@ -270,7 +270,7 @@ teaserBody item = do
 indexNavLink :: Int -> Int -> Int -> String
 indexNavLink n d maxn = renderHtml ref
   where ref = if (refPage == "") then ""
-              else H.a ! A.href (toValue $ toUrl $ refPage) $ 
+              else H.a ! A.href (toValue $ toUrl $ refPage) $
                    (preEscapedString lab)
         lab = if (d > 0) then "Older Entries &raquo;" else "&laquo; Newer Entries"
         refPage = if (n + d < 1 || n + d > maxn) then ""
