@@ -87,10 +87,9 @@ main = hakyll $ do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll postsGlob
             let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
+                    listField "posts" postCtx (loadAll postsGlob >>= recentFirst) `mappend`
+                    constField "title" "Archives" `mappend`
                     defaultContext
 
             makeItem ""
@@ -190,25 +189,22 @@ lookupPostUrl :: AdjPostHM -> Item String -> Compiler String
 lookupPostUrl hm post =
     let ident = itemIdentifier post
         ident' = HM.lookup ident hm
-    in fmap (((maybe empty toUrl) . (maybe mempty getRoute))) ident'
+    in
+    (fmap (maybe empty $ toUrl) . (maybe empty getRoute)) ident'
 
 
 previousPostUrl :: [Identifier] -> Item String -> Compiler String
 previousPostUrl sortedPosts post = do
     let ident = itemIdentifier post
         ident' = itemBefore sortedPosts ident
-    case ident' of
-        Just i -> (fmap (maybe empty $ toUrl) . getRoute) i
-        Nothing -> empty
+    (fmap (maybe empty $ toUrl) . (maybe empty getRoute)) ident'
 
 
 nextPostUrl :: [Identifier] -> Item String -> Compiler String
 nextPostUrl sortedPosts post = do
     let ident = itemIdentifier post
         ident' = itemAfter sortedPosts ident
-    case ident' of
-        Just i -> (fmap (maybe empty $ toUrl) . getRoute) i
-        Nothing -> empty
+    (fmap (maybe empty $ toUrl) . (maybe empty getRoute)) ident'
 
 
 itemAfter :: Eq a => [a] -> a -> Maybe a
