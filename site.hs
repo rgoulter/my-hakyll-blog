@@ -270,25 +270,16 @@ teaserBody item = do
 
     compactTeaser :: String -> String
     compactTeaser =
-        (replaceAll "<iframe [^>]*>" (const "")) .
-        (replaceAll "<img [^>]*>" (const "")) .
-        (replaceAll "<p>" (const "")) .
-        (replaceAll "</p>" (const "")) .
-        (replaceAll "<blockquote>" (const "")) .
-        (replaceAll "</blockquote>" (const "")) .
-        (replaceAll "<strong>" (const "")) .
-        (replaceAll "</strong>" (const "")) .
-        (replaceAll "<ol>" (const "")) .
-        (replaceAll "</ol>" (const "")) .
-        (replaceAll "<ul>" (const "")) .
-        (replaceAll "</ul>" (const "")) .
-        (replaceAll "<li>" (const "")) .
-        (replaceAll "</li>" (const "")) .
-        (replaceAll "<h[0-9][^>]*>" (const "")) .
-        (replaceAll "</h[0-9]>" (const "")) .
-        (replaceAll "<pre.*" (const "")) .
-        (replaceAll "<a [^>]*>" (const "")) .
-        (replaceAll "</a>" (const ""))
+        -- Composition of
+        -- (replaceAll <PAT> (const ""))
+        let toReplace =
+                [ "<iframe [^>]*>" , "<img [^>]*>" , "<p>" , "</p>"
+                , "<blockquote>" , "</blockquote>" , "<strong>"
+                , "</strong>" , "<ol>" , "</ol>" , "<ul>" , "</ul>"
+                , "<li>" , "</li>" , "<h[0-9][^>]*>" , "</h[0-9]>"
+                , "<pre.*" , "<a [^>]*>" , "</a>"
+                ]
+        in foldr (\pat f -> (replaceAll pat (const "")) . f) id toReplace
 
 
 --------------------------------------------------------------------------------
