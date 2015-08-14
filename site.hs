@@ -305,7 +305,7 @@ indexNavLink n d maxn =
   where
     ref = if (refPage == "")
           then ""
-          else H.a ! A.href (toValue $ toUrl $ refPage) (preEscapedString lab)
+          else H.a ! A.href (toValue $ toUrl $ refPage) $ (preEscapedString lab)
     lab = if (d > 0) then "Older Entries &raquo;" else "&laquo; Newer Entries"
     refPage = if (n + d < 1 || n + d > maxn)
               then ""
