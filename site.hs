@@ -86,10 +86,9 @@ main = hakyll $ do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll postsGlob
             let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
+                    listField "posts" postCtx (loadAll postsGlob >>= recentFirst) `mappend`
+                    constField "title" "Archives" `mappend`
                     defaultContext
 
             makeItem ""
