@@ -1,7 +1,8 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid (mappend)
-import           Hakyll
+
+import Data.Monoid (mappend)
+import Hakyll
 
 import Data.List (isPrefixOf, tails, findIndex, intercalate, sortBy)
 import Data.Maybe (fromMaybe)
@@ -158,7 +159,8 @@ postCtx =
 
 
 postCtxWithTags :: Tags -> Context String
-postCtxWithTags tags = tagsField "tags" tags `mappend` postCtx
+postCtxWithTags tags =
+    tagsField "tags" tags `mappend` postCtx
 
 
 teaserCtx :: Tags -> Context String
@@ -170,8 +172,9 @@ teaserCtx tags =
 --------------------------------------------------------------------------------
 type AdjPostHM = HM.HashMap Identifier Identifier
 
+
 instance Hashable Identifier where
-    hashWithSalt salt id = hashWithSalt salt (show id)
+    hashWithSalt salt = hashWithSalt salt . show
 
 
 buildAdjacentPostsHashMap :: [Identifier] -> (AdjPostHM, AdjPostHM)
@@ -180,19 +183,14 @@ buildAdjacentPostsHashMap posts =
         buildHM [] _ = HM.empty
         buildHM _ [] = HM.empty
         buildHM (k:ks) (v:vs) = HM.insert k v $ buildHM ks vs
-    in
-    (buildHM (tail posts) posts, buildHM posts (tail posts))
+    in (buildHM (tail posts) posts, buildHM posts (tail posts))
 
 
 lookupPostUrl :: AdjPostHM -> Item String -> Compiler String
 lookupPostUrl hm post =
     let ident = itemIdentifier post
         ident' = HM.lookup ident hm
-    in
-    -- I'm sure there's a cleaner way of writing this.
-    case ident' of
-        Just i -> (fmap (maybe empty $ toUrl) . getRoute) i
-        Nothing -> empty
+    in fmap (((maybe empty toUrl) . (maybe mempty getRoute))) ident'
 
 
 previousPostUrl :: [Identifier] -> Item String -> Compiler String
@@ -251,8 +249,10 @@ rulesForTags tags titleForTag =
 -- https://github.com/ian-ross/blog
 chunk :: Int -> [a] -> [[a]]
 chunk n [] = []
-chunk n xs = ys : chunk n zs
-    where (ys,zs) = splitAt n xs
+chunk n xs =
+    ys : chunk n zs
+  where
+    (ys,zs) = splitAt n xs
 
 
 --------------------------------------------------------------------------------
@@ -269,8 +269,8 @@ teaserBody item = do
 
     maxLengthTeaser :: String -> String
     maxLengthTeaser s = if findIndex (isPrefixOf "<!-- more -->") (tails s) == Nothing
-                            then unwords (take 60 (words s))
-                            else s
+                        then unwords (take 60 (words s))
+                        else s
 
     compactTeaser :: String -> String
     compactTeaser =
@@ -300,13 +300,16 @@ teaserBody item = do
 -- https://github.com/ian-ross/blog
 --
 indexNavLink :: Int -> Int -> Int -> String
-indexNavLink n d maxn = renderHtml ref
-  where ref = if (refPage == "") then ""
-              else H.a ! A.href (toValue $ toUrl $ refPage) $
-                   (preEscapedString lab)
-        lab = if (d > 0) then "Older Entries &raquo;" else "&laquo; Newer Entries"
-        refPage = if (n + d < 1 || n + d > maxn) then ""
-                  else blogPageForPageIdx (n + d)
+indexNavLink n d maxn =
+    renderHtml ref
+  where
+    ref = if (refPage == "")
+          then ""
+          else H.a ! A.href (toValue $ toUrl $ refPage) (preEscapedString lab)
+    lab = if (d > 0) then "Older Entries &raquo;" else "&laquo; Newer Entries"
+    refPage = if (n + d < 1 || n + d > maxn)
+              then ""
+              else blogPageForPageIdx (n + d)
 
 
 --------------------------------------------------------------------------------
@@ -320,30 +323,31 @@ paginate itemsPerPage rules = do
         pageNumbers = take maxIndex [1..]
         process i is = rules i maxIndex is
     zipWithM_ process pageNumbers chunks
-        where
-            byDate id1 id2 =
-                let fn1 = takeFileName $ toFilePath id1
-                    fn2 = takeFileName $ toFilePath id2
-                    parseTime' fn = parseTimeM True defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
-                in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
+      where
+    byDate id1 id2 =
+        let fn1 = takeFileName $ toFilePath id1
+            fn2 = takeFileName $ toFilePath id2
+            parseTime' fn = parseTimeM True defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
+        in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
 
 
 sortIdentifiersByDate :: [Identifier] -> [Identifier]
 sortIdentifiersByDate identifiers =
     reverse $ sortBy byDate identifiers
-        where
-            byDate id1 id2 =
-                let fn1 = takeFileName $ toFilePath id1
-                    fn2 = takeFileName $ toFilePath id2
-                    parseTime' fn = parseTimeM True defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
-                in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
+      where
+    byDate id1 id2 =
+        let fn1 = takeFileName $ toFilePath id1
+            fn2 = takeFileName $ toFilePath id2
+            parseTime' fn = parseTimeM True defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
+        in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
 
 
 --------------------------------------------------------------------------------
 -- | Render a simple tag list in HTML, with the tag count next to the item
 -- TODO: Maybe produce a Context here
 renderTagListLines :: Tags -> Compiler (String)
-renderTagListLines = renderTags makeLink (intercalate ",<br>")
+renderTagListLines =
+    renderTags makeLink (intercalate ",<br>")
   where
-      makeLink tag url count _ _ = renderHtml $
-          H.a ! A.href (toValue url) $ toHtml (tag ++ " (" ++ show count ++ ")")
+    makeLink tag url count _ _ = renderHtml $
+        H.a ! A.href (toValue url) $ toHtml (tag ++ " (" ++ show count ++ ")")
