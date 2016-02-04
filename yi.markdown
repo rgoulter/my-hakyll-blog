@@ -4,7 +4,7 @@ title: Yi
 
 I thought it might make sense to have a page where I can dump all my Yi
 related findings, rather than making tidbit posts about Yi.  
-See [posts tagged 'Yi'](/tags/yi.html).  
+See [posts tagged 'Yi'](/tags/programming.yi.html).  
 (NOTE: 22/09/14: I haven't taken the time to really look into Yi as intensely
  as I have been earlier. Some of the info below may be out of date. Feel free
  to email me, richard.goulter@gmail.com).
