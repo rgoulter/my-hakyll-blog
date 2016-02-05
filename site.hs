@@ -98,7 +98,7 @@ main = hakyll $ do
                 >>= relativizeUrls
 
 
-    paginate 5 $ \index maxIndex itemsForPage -> do
+    paginate 10 $ \index maxIndex itemsForPage -> do
         let id = fromFilePath $ blogPageForPageIdx index
         create [id] $ do
             route idRoute
