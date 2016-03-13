@@ -22,7 +22,7 @@ var myAnalyticsActiveTimeSpent = 0; // in milliseconds
 
 
 // for timing, just frequently tally some var every 15-30s.
-var myAnalyticsTimingPrecision = 30 * 1000; // in milliseconds
+var myAnalyticsTimingPrecision = 15 * 1000; // in milliseconds
 
 
 // 'Stateful' vars
@@ -103,7 +103,9 @@ function myAnalyticsAtBottom() {
 
         timeToReachBottom = latestTimeAtBottom - latestTimeAtTop; // ms
 
-        (myAnalyticsCallbacks["read"])(readCount, timeToReachBottom);
+        (myAnalyticsCallbacks["read"])(latestTimeAtBottom - pageLoadTimestamp,
+                                       readCount,
+                                       timeToReachBottom);
     }
 }
 
@@ -142,8 +144,9 @@ function myAnalyticsOnScroll(el) {
 
     // Wait at least 200ms (or so) between CBs.
     if (latestScrollCall < Date.now() - 200) {
-        (myAnalyticsCallbacks["scrollPercent"])(contentScrolledPercentage);
         latestScrollCall = Date.now();
+        (myAnalyticsCallbacks["scrollPercent"])(latestScrollCall - pageLoadTimestamp,
+                                                contentScrolledPercentage);
     }
 
     // At top if < ~5%

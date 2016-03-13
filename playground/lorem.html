@@ -83,20 +83,21 @@
         }
 
         /* Diagnostics div. */
-        #diagDiv {
-            background-color: #33aa55;
-
-
-            position:fixed;
-            top:0px;
-            right:0px;
-            width:20%;
-            z-index: 100;
-        }
+        /* #diagDiv { */
+        /*     background-color: #33aa55; */
+        /*  */
+        /*  */
+        /*     position:fixed; */
+        /*     top:0px; */
+        /*     right:0px; */
+        /*     width:20%; */
+        /*     z-index: 100; */
+        /* } */
         </style>
 
         <!-- My analytics -->
-        <script src="my_analytics.js" />
+        <script src="my_analytics.js"></script>
+        <script src="my_analytics_debug.js"></script>
 
         <!-- Google Analytics -->
         <script>
@@ -111,47 +112,6 @@
         </script>
     </head>
     <body>
-        <div id="diagDiv">
-            DIAGNOSTICS<br/>
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Scrolled Down:</td>
-                        <td id="valScrollDown">%</td>
-                    </tr>
-                    <tr>
-                        <td>Time spent:</td>
-                        <td id="valTimeSpent">%</td>
-                    </tr>
-                    <tr>
-                        <td>Time spent (active):</td>
-                        <td id="valActiveTimeSpent">%</td>
-                    </tr>
-                    <tr>
-                        <td>Time spent to reach bottom:</td>
-                        <td id="valTimeToReachBottom">%</td>
-                    </tr>
-                    <tr>
-                        <td>Read post count:</td>
-                        <td id="valReadCount">%</td>
-                    </tr>
-                    <tr>
-                        <td>Current Idle Time:</td>
-                        <td id="valCurrentIdleTime">%</td>
-                    </tr>
-                    <tr>
-                        <td>Longest Idle Time:</td>
-                        <td id="valLongestIdleTime">%</td>
-                    </tr>
-                    <tr>
-                        <td>Initial Idle Time:</td>
-                        <td id="valInitialIdleTime">%</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-
         <div id="page" class="container">
             <!-- This, with no padding on left/right -->
             <div class="banner">
@@ -269,7 +229,7 @@
         </div>
         <script>
             window.onload = function() {
-                console.log("ONLOAD");
+                myAnalyticsDebugInit();
                 myAnalyticsInit(debugCallbacks);
             }
         </script>
