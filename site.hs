@@ -14,8 +14,7 @@ import Data.Time.Format (parseTimeM, defaultTimeLocale)
 import Data.Time.Clock (UTCTime)
 
 import Text.Blaze.Html.Renderer.String (renderHtml)
-import Text.Blaze.Html ((!), toHtml, toValue)
-import Text.Blaze.Internal (preEscapedString)
+import Text.Blaze.Html ((!), preEscapedString, toHtml, toValue)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 
