@@ -20,18 +20,36 @@ Not really an HTML/CSS kinda guy.
 
 
 ## Instructions to Build
-(More for me, than for you). Since I'm inclined to forget,  
-I have my posts in a git submodule, so:
+
+I have my `posts` in a git submodule, so:
 
 ```
 git submodule init
 git submodule update
 ```
 
-and then to make the side:
+and then to make the site:
+
+### Using Stack
+
+I've found it easiest to just use Haskell Stack.
 
 ```
-cabal sandbox init
-cabal install hakyll-4.5.3.0
-cabal exec ghc -- --make -threaded site.hs
+stack build
+```
+
+Then the `hakyll` site executable can be `exec`'d using `stack`:
+
+```
+stack exec site build
+```
+
+#### Running on Windows
+
+cf. https://stackoverflow.com/questions/27616611/run-time-exception-when-attempting-to-print-a-unicode-character
+
+It's best to run:
+
+```
+chcp.com 65001
 ```
