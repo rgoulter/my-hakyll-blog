@@ -6,3 +6,5 @@ site
 *.markdown
 .cabal-sandbox
 cabal.sandbox.config
+.ghc*
+.stack-work
