@@ -71,6 +71,21 @@ these editors are taking.
   other formats, it has great table editing features, it can be used
   to track time (by clocking in and out of headlines).
 
+#### Magit
+
+- You can find GUIs for git embedded in environments like
+  vim, Visual Studio Code or any IDE.  
+  But, Magit is an excellent package. It's good enough to be
+  worth using emacs for, even if you don't use any other part of it.
+- To be fair, git is still a tough beast to use.
+- Magit seems to be a "best of both worlds" situation:  
+  Power users are at there best when they can stick to their
+  keyboard to get the job done.  
+  New users need the discoverability that comes along with something
+  like a GUI or dropdown menu.  
+  AFAICT, Magit's excellent Developer Experience (DX) caters
+  to both of these.
+
 #### Extensibility
 
 - I know that most programs have plugins/extensions.
