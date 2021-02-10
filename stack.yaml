@@ -10,7 +10,8 @@
 #
 # resolver: lts-3.5
 # resolver: nightly-2015-09-21
-resolver: ghc-8.6.1
+# resolver: ghc-8.6.1
+# resolver: lts-13.1
 # resolver: ghcjs-0.1.0_ghc-7.10.2
 #
 # The location of a snapshot can be provided as a file or url. Stack assumes
@@ -65,3 +66,7 @@ packages:
 #
 # Allow a newer minor version of GHC than the snapshot specifies
 # compiler-check: newer-minor
+
+flags:
+  cryptonite:
+    support_rdrand: false
