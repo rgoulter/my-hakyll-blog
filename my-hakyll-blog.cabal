@@ -16,7 +16,7 @@ extra-source-files:  CHANGELOG.md, README.md
 cabal-version:       >=1.10
 
 executable my-hakyll-blog
-  main-is:             Site.hs
+  main-is:             site.hs
   -- other-modules:
   -- other-extensions:
   build-depends:       base >=4.0 && <5
