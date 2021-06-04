@@ -8,6 +8,7 @@ import Data.List (isPrefixOf, tails, findIndex, intercalate, sortBy)
 import Data.Maybe (fromMaybe)
 import Control.Applicative (Alternative (..))
 import Control.Monad (forM_, zipWithM_, liftM)
+import GHC.IO.Encoding (setLocaleEncoding, utf8)
 import System.FilePath (takeFileName)
 
 import Data.Time.Format (parseTimeM, defaultTimeLocale)
@@ -33,7 +34,9 @@ blogPageForPageIdx index = (if index==1 then "" else show index ++ "/") ++ "inde
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main =
+  setLocaleEncoding utf8 >>= \_ ->
+  hakyll $ do
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
