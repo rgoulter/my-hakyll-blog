@@ -23,18 +23,54 @@ The content of `posts/` is a tree of files named:
 posts/<category>/YYYY-MM-DD-title.markdown
 ```
 
+### Using Nixpkgs
+
+With [nix](https://nixos.org/) installed, this hakyll static site generator
+can be built by running:
+
+```
+nix-build
+```
+
+and the resulting program can be run from `result/bin`, e.g.:
+
+```
+./result/bin/my-hakyll-blog build
+```
+
+##### Installing to Nix User Environment
+
+If you want the program installed to your Nix user environment,
+run:
+
+```
+nix-env --install --file default.nix
+```
+
+And this can be uninstalled with:
+
+```
+nix-env --uninstall my-hakyll-blog
+```
+
 ### Using Stack
 
-I've found it easiest to just use Haskell Stack.
+Using stack, the program can be run with e.g.:
+
+```
+stack run -- build
+```
+
+Alternatively, the program can be built with:
 
 ```
 stack build
 ```
 
-Then the `hakyll` site executable can be `exec`'d using `stack`:
+Then the `hakyll` site executable can be `exec`'d using `stack`, e.g.:
 
 ```
-stack exec site build
+stack exec my-hakyll-blog -- build
 ```
 
 ### Using Stack, Using Nix
