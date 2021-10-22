@@ -4,8 +4,7 @@ If you found this repo looking for cool things to "borrow", feel free;
 I'd recommend looking at the commits which improved the site rather than
 the `site.hs` as a whole.
 
-"Cool things" I've added onto `site.hs` (not necessarily my creativity, mind)
-which the default does have include:
+I've added onto `site.hs` which the default does have include:
 
 * Tags, Categories for posts.
 
@@ -14,21 +13,15 @@ which the default does have include:
 
 * Next/Previous Post links in the post.
 
-* Disqus comments. (Not really a Hakyll thing, but still).
-
-Not really an HTML/CSS kinda guy.
-
-
 ## Instructions to Build
 
-I have my `posts` in a git submodule, so:
+I have my `posts` in a git submodule.
+
+The content of `posts/` is a tree of files named:
 
 ```
-git submodule init
-git submodule update
+posts/<category>/YYYY-MM-DD-title.markdown
 ```
-
-and then to make the site:
 
 ### Using Stack
 
