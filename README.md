@@ -31,15 +31,43 @@ Hakyll's [Configuration](https://hackage.haskell.org/package/hakyll-4.12.4.0/doc
 A default value will be used for the configuration
 option if it is not set.
 
-## Instructions to Build
-
-I have my `posts` in a git submodule.
+## Website Source Files Layout
 
 The content of `posts/` is a tree of files named:
 
 ```
 posts/<category>/YYYY-MM-DD-title.markdown
 ```
+
+## Installing from Nix Shell
+
+With [nix](https://nixos.org/) installed, this hakyll static site generator
+can be run in a nix-shell. e.g. if `shell.nix` has contents:
+
+```
+{ pkgs ? import <nixpkgs> {} }:
+with pkgs;
+let
+  my-hakyll-blog = callPackage (fetchFromGitHub {
+      owner = "rgoulter";
+      repo = "my-hakyll-blog";
+      rev = "a3962299f14944a0e9ccf8fd84bd7be524b74cd6";
+      sha256 = "06p69fwk6v8hgwhr37rl3qlbpdx8mv66dngpljzichh2ak35x9nm";
+    }) {};
+in
+mkShell {
+  buildInputs = [
+    my-hakyll-blog
+  ];
+}
+```
+
+Then, the `my-hakyll-blog` program will be available from `nix-shell`.
+
+The benefit of this approach is it avoids requiring manually cloning and building
+the static site generator.
+
+## Instructions to Build
 
 ### Using Nixpkgs
 
