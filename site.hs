@@ -9,6 +9,7 @@ import Data.Maybe (fromMaybe)
 import Control.Applicative (Alternative (..))
 import Control.Monad (forM_, zipWithM_, liftM)
 import GHC.IO.Encoding (setLocaleEncoding, utf8)
+import System.Environment (lookupEnv)
 import System.FilePath (takeFileName)
 
 import Data.Time.Format (parseTimeM, defaultTimeLocale)
@@ -33,10 +34,36 @@ blogPageForPageIdx :: Int -> String
 blogPageForPageIdx index = (if index==1 then "" else show index ++ "/") ++ "index.html"
 
 --------------------------------------------------------------------------------
+hakyllConfigFromEnvironment :: IO Configuration
+hakyllConfigFromEnvironment = do
+  maybeDestinationDirectory <- lookupEnv "HAKYLL_DESTINATION_DIRECTORY"
+  maybeStoreDirectory       <- lookupEnv "HAKYLL_STORE_DIRECTORY"
+  maybeTmpDirectory         <- lookupEnv "HAKYLL_TMP_DIRECTORY"
+  maybeProviderDirectory    <- lookupEnv "HAKYLL_PROVIDER_DIRECTORY"
+  maybeDeployCommand        <- lookupEnv "HAKYLL_DEPLOY_COMMAND"
+  maybeInMemoryCacheStr     <- lookupEnv "HAKYLL_IN_MEMORY_CACHE"
+  maybePreviewHost          <- lookupEnv "HAKYLL_PREVIEW_HOST"
+  maybePreviewPortStr       <- lookupEnv "HAKYLL_PREVIEW_PORT"
+  -- inMemoryCache = False only if the env variable is set to "false".
+  let maybeInMemoryCache = ((==) "false") <$> maybeInMemoryCacheStr
+  let maybePreviewPort = read <$> maybePreviewPortStr
+  return defaultConfiguration
+         { destinationDirectory = fromMaybe (destinationDirectory defaultConfiguration) maybeDestinationDirectory
+         , storeDirectory = fromMaybe (storeDirectory defaultConfiguration) maybeStoreDirectory
+         , tmpDirectory = fromMaybe (tmpDirectory defaultConfiguration) maybeTmpDirectory
+         , providerDirectory = fromMaybe (providerDirectory defaultConfiguration) maybeProviderDirectory
+         , deployCommand = fromMaybe (deployCommand defaultConfiguration) maybeDeployCommand
+         , inMemoryCache = fromMaybe (inMemoryCache defaultConfiguration) maybeInMemoryCache
+         , previewHost = fromMaybe (previewHost defaultConfiguration) maybePreviewHost
+         , previewPort = fromMaybe (previewPort defaultConfiguration) maybePreviewPort
+         }
+
+--------------------------------------------------------------------------------
 main :: IO ()
-main =
-  setLocaleEncoding utf8 >>= \_ ->
-  hakyll $ do
+main = do
+  setLocaleEncoding utf8
+  hakyllConfig <- hakyllConfigFromEnvironment
+  hakyllWith hakyllConfig $ do
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
