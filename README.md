@@ -59,7 +59,7 @@ posts/<category>/YYYY-MM-DD-title.markdown
   - `categories/<category>.html`, `tags/<tag>.html` :: Pages with lists of posts with that category/tag.
   - `index.html`, `<page>/index.html` :: Paginated previews of blogposts.
 
-## Installing from Nix Shell
+## Running from a Nix Shell
 
 With [nix](https://nixos.org/) installed, this hakyll static site generator
 can be run in a nix-shell. e.g. if `shell.nix` has contents:
@@ -102,6 +102,14 @@ and the resulting program can be run from `result/bin`, e.g.:
 
 ```
 ./result/bin/my-hakyll-blog build
+```
+
+To build the site with the `provider-example.com` sample content:
+
+```
+env \
+  HAKYLL_PROVIDER_DIRECTORY="provider-example.com" \
+  ./result/bin/my-hakyll-blog build
 ```
 
 ##### Installing to Nix User Environment
@@ -147,6 +155,12 @@ e.g. to run the `build` Hakyll command:
 
 ```
 stack --nix-shell-file=shell.nix run -- build
+```
+
+To build the site with the `provider-example.com` sample content:
+
+```
+stack --nix-shell-file=example.com-shell.nix run -- build
 ```
 
 #### Running on Windows
