@@ -1,11 +1,12 @@
-#!/usr/bin/python2
+#!/usr/bin/env python
+#! nix-shell -i python3 -p python3 python39Packages.jinja2
 
 import jinja2
 import re
 import time
 
 # Get a title for the post
-postTitle = raw_input("Enter post title: ")
+postTitle = input("Enter post title: ")
 
 templateLoader = jinja2.FileSystemLoader( searchpath="." )
 templateEnv = jinja2.Environment( loader=templateLoader )

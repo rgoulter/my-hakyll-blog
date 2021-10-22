@@ -1,4 +1,5 @@
 #!/bin/sh
+#! nix-shell -i bash -p bash -p python3 python39Packages.jinja2
 # Grabbed from some other Hakyll repo, in particular
 # https://raw.githubusercontent.com/Keruspe/blog/master/new_post.sh
 
@@ -13,7 +14,7 @@ clean_title=$(echo $title \
     | tr -dc 'a-z0-9. _-' \
     | tr ' ' '-')
 
-filename=$date_pattern$clean_title.md
+filename=$date_pattern$clean_title.markdown
 author=$(git config --get user.name)
 
 cat > "posts/"$filename <<EOF
@@ -24,5 +25,3 @@ tags:
 ---
 
 EOF
-
-$EDITOR "posts/"$filename
