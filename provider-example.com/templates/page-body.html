@@ -1,0 +1,43 @@
+<!--
+contentpage.html, for content-specific pages, like emacs.html/yi.html.
+-->
+
+<div class="row">
+    <div class="col-md-8" id="page-content">
+        $body$
+    </div>
+    <div class="col-md-4">
+        Contents<br/>
+        <div id="toc"></div>
+    </div>
+</div>
+
+<script>
+  //Executes your code when the DOM is ready.  Acts the same as (document).ready().
+  $$(function() {
+      //Calls the tocify method on your HTML div.
+      $$("#toc").tocify({context: "#page-content", selectors: "h1, h2, h3"});
+  });
+
+  // See http://imakewebthings.com/waypoints/shortcuts/sticky-elements/
+  var sticky = new Waypoint.Sticky({
+      element: $$("#toc")
+  });
+</script>
+
+<style>
+  .stuck {
+      position:fixed;
+      top:0;
+  }
+</style>
+
+<!-- TOCify script seems to be using an earlier version of bootstrap. -->
+<style>
+.nav-list > li.active > a,
+.nav-list > li.active > a:hover,
+.nav-list > li.active > a:focus {
+  color: #fff;
+  background-color: #337ab7;
+}
+</style>

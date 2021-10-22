@@ -1,0 +1,21 @@
+div .banner .nav {
+    text-align: right;
+}
+
+div .banner .nav a {
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+div#footer {
+    color: #555;
+    font-size: 12px;
+    text-align: right;
+}
+
+div.info {
+    color: #555;
+    font-size: 14px;
+    font-style: italic;
+    margin-bottom: 15px;
+}
