@@ -44,6 +44,16 @@ Then the `hakyll` site executable can be `exec`'d using `stack`:
 stack exec site build
 ```
 
+### Using Stack, Using Nix
+
+Using [nix](https://nixos.org/) to retrieve the GHC version:
+
+e.g. to run the `build` Hakyll command:
+
+```
+stack --nix-shell-file=shell.nix run -- build
+```
+
 #### Running on Windows
 
 cf. https://stackoverflow.com/questions/27616611/run-time-exception-when-attempting-to-print-a-unicode-character
