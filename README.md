@@ -31,13 +31,33 @@ Hakyll's [Configuration](https://hackage.haskell.org/package/hakyll-4.12.4.0/doc
 A default value will be used for the configuration
 option if it is not set.
 
-## Website Source Files Layout
+## Website Provider Source Files Layout
 
-The content of `posts/` is a tree of files named:
+- Posts: the content of `posts/` is a tree of files named:
 
 ```
 posts/<category>/YYYY-MM-DD-title.markdown
 ```
+
+- Pages: the content of `pages/` is a list of files.
+
+- Static Assets: under `js/`, `images/`, `css/` directory.
+
+- Templates:
+  - `templates/default.html`
+  - `templates/archive-body.html`
+  - `templates/page-body.html`
+  - `templates/paginated_previews-body.html`
+  - `templates/post-body.html`
+  - `templates/tag-body.html`
+  - `templates/post_content.html`
+  - `templates/teaser.html`
+
+- Webpages generated dynamically:
+  - `atom.xml` :: RSS feed of posts with title.
+  - `archive.html` :: List of posts with title.
+  - `categories/<category>.html`, `tags/<tag>.html` :: Pages with lists of posts with that category/tag.
+  - `index.html`, `<page>/index.html` :: Paginated previews of blogposts.
 
 ## Installing from Nix Shell
 

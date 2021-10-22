@@ -79,7 +79,7 @@ main = do
     match "pages/*" $ do
         route   $ (gsubRoute "pages/" (const "")) `composeRoutes` setExtension "html"
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/content-page.html" defaultContext
+            >>= loadAndApplyTemplate "templates/page-body.html" defaultContext
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
@@ -107,23 +107,23 @@ main = do
 
             pandocCompiler
                 >>= saveSnapshot "teaser"
-                >>= loadAndApplyTemplate "templates/post.html"    postContext
+                >>= loadAndApplyTemplate "templates/post_content.html"    postContext
                 >>= saveSnapshot "content"
-                >>= loadAndApplyTemplate "templates/post-with-pagination.html" postContext
+                >>= loadAndApplyTemplate "templates/post-body.html" postContext
                 >>= loadAndApplyTemplate "templates/default.html" postContext
                 >>= relativizeUrls
 
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            let archiveCtx =
+            let archiveContext =
                     listField "posts" postCtx (loadAll postsGlob >>= recentFirst) `mappend`
                     constField "title" "Archives" `mappend`
                     defaultContext
 
             makeItem ""
-                >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-                >>= loadAndApplyTemplate "templates/default.html" archiveCtx
+                >>= loadAndApplyTemplate "templates/archive-body.html" archiveContext
+                >>= loadAndApplyTemplate "templates/default.html" archiveContext
                 >>= relativizeUrls
 
 
@@ -132,7 +132,7 @@ main = do
         create [id] $ do
             route idRoute
             compile $ do
-                let allCtx =
+                let allContext =
                         field "title" (\_ -> return "Blog") `mappend`
                         defaultContext
                     loadTeaser id = loadSnapshot id "teaser"
@@ -140,7 +140,7 @@ main = do
                                         -- >>= relativizeUrls
                 items <- sequence $ map loadTeaser itemsForPage
                 let itembodies = map itemBody items
-                    postsCtx =
+                    postsContext =
                         constField "posts" (concat itembodies) `mappend`
                         field "navlinkolder" (\_ -> return $ indexNavLink index 1 maxIndex) `mappend`
                         field "navlinknewer" (\_ -> return $ indexNavLink index (-1) maxIndex) `mappend`
@@ -149,8 +149,8 @@ main = do
                         defaultContext
 
                 makeItem ""
-                    >>= loadAndApplyTemplate "templates/blogpage.html" postsCtx
-                    >>= loadAndApplyTemplate "templates/default.html" allCtx
+                    >>= loadAndApplyTemplate "templates/paginated_previews-body.html" postsContext
+                    >>= loadAndApplyTemplate "templates/default.html" allContext
                     >>= relativizeUrls
 
 
@@ -259,13 +259,13 @@ rulesForTags tags titleForTag =
     route idRoute
     compile $ do
         posts <- recentFirst =<< loadAll pattern
-        let ctx = constField "title" title
+        let tagContext = constField "title" title
                   `mappend` listField "posts" postCtx (return posts)
                   `mappend` defaultContext
 
         makeItem ""
-            >>= loadAndApplyTemplate "templates/tag.html" ctx
-            >>= loadAndApplyTemplate "templates/default.html" ctx
+            >>= loadAndApplyTemplate "templates/tag-body.html" tagContext
+            >>= loadAndApplyTemplate "templates/default.html" tagContext
             >>= relativizeUrls
 
 
