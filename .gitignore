@@ -9,3 +9,4 @@ cabal.sandbox.config
 .ghc*
 .stack-work
 result
+provider-rgoulter.com*
