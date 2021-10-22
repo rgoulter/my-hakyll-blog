@@ -13,6 +13,24 @@ I've added onto `site.hs` which the default does have include:
 
 * Next/Previous Post links in the post.
 
+## Runtime Configuration
+
+The following environment variables can be set,
+corresponding to the similarly named options in
+Hakyll's [Configuration](https://hackage.haskell.org/package/hakyll-4.12.4.0/docs/Hakyll-Core-Configuration.html#t:Configuration):
+
+- `HAKYLL_DESTINATION_DIRECTORY`
+- `HAKYLL_STORE_DIRECTORY`
+- `HAKYLL_TMP_DIRECTORY`
+- `HAKYLL_PROVIDER_DIRECTORY`
+- `HAKYLL_DEPLOY_COMMAND`
+- `HAKYLL_IN_MEMORY_CACHE`
+- `HAKYLL_PREVIEW_HOST`
+- `HAKYLL_PREVIEW_PORT`
+
+A default value will be used for the configuration
+option if it is not set.
+
 ## Instructions to Build
 
 I have my `posts` in a git submodule.
