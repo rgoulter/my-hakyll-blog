@@ -295,26 +295,4 @@ I've also seen `'.` used for "jump to last edit". Yi doesn't have this.
 This work is licensed under a
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
 Creative Commons Attribution 4.0 International License
-</a>.  
-
-* * *
-
-<!-- disqus comment section -->
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'richardgoultersblog'; // required: replace example with your forum shortname
-    var disqus_identifier = 'yi.html';
-    var disqus_url = 'http://www.rgoulter.com/blog/yi.html';
-    var disqus_title = 'Yi - RGoulters Notes';
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
+</a>.
