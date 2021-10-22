@@ -76,8 +76,8 @@ main = do
         route   idRoute
         compile compressCssCompiler
 
-    match (fromList ["yi.markdown", "emacs.markdown"]) $ do
-        route   $ setExtension "html"
+    match "pages/*" $ do
+        route   $ (gsubRoute "pages/" (const "")) `composeRoutes` setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/content-page.html" defaultContext
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
