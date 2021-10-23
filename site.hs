@@ -103,11 +103,11 @@ main = do
             let postContext =
                     field "nextPost" (lookupPostUrl nextPostHM) `mappend`
                     field "prevPost" (lookupPostUrl prevPostHM) `mappend`
-                    postCtxWithTags tags
+                    postContextWithTags tags
 
             pandocCompiler
                 >>= saveSnapshot "teaser"
-                >>= loadAndApplyTemplate "templates/post_content.html"    postContext
+                >>= loadAndApplyTemplate "templates/post_content.html" postContext
                 >>= saveSnapshot "content"
                 >>= loadAndApplyTemplate "templates/post-body.html" postContext
                 >>= loadAndApplyTemplate "templates/default.html" postContext
@@ -117,7 +117,7 @@ main = do
         route idRoute
         compile $ do
             let archiveContext =
-                    listField "posts" postCtx (loadAll postsGlob >>= recentFirst) `mappend`
+                    listField "posts" postContext (loadAll postsGlob >>= recentFirst) `mappend`
                     constField "title" "Archives" `mappend`
                     defaultContext
 
@@ -136,7 +136,7 @@ main = do
                         field "title" (\_ -> return "Blog") `mappend`
                         defaultContext
                     loadTeaser id = loadSnapshot id "teaser"
-                                        >>= loadAndApplyTemplate "templates/teaser.html" (teaserCtx tags)
+                                        >>= loadAndApplyTemplate "templates/teaser.html" (teaserContext tags)
                                         -- >>= relativizeUrls
                 items <- sequence $ map loadTeaser itemsForPage
                 let itembodies = map itemBody items
@@ -157,10 +157,11 @@ main = do
     create ["atom.xml"] $ do
         route idRoute
         compile $ do
-            let feedCtx = postCtx `mappend` bodyField "description"
+            -- Use the blogpost's body as its $description$ in the Atom feed.
+            let feedItemContext = postContext `mappend` bodyField "description"
             posts <- fmap (take 10) . recentFirst =<<
                 loadAllSnapshots postsGlob "content"
-            renderAtom feedConfiguration feedCtx posts
+            renderAtom feedConfiguration feedItemContext posts
 
 
     match "templates/*" $ compile templateCompiler
@@ -180,21 +181,48 @@ feedConfiguration = FeedConfiguration
 
 
 --------------------------------------------------------------------------------
-postCtx :: Context String
-postCtx =
+-- | A context that contains
+--
+--     - A @$date$@ field (formatted <Month name> <day of month>, <year>)
+--     - A @$body$@ field
+--     - Metadata fields
+--     - A @$url$@ 'urlField'
+--     - A @$path$@ 'pathField'
+--     - A @$title$@ 'titleField'
+postContext :: Context String
+postContext =
     dateField "date" "%B %e, %Y" `mappend`
     defaultContext
 
 
-postCtxWithTags :: Tags -> Context String
-postCtxWithTags tags =
-    tagsField "tags" tags `mappend` postCtx
+-- | A context that contains
+--
+--     - A @$tags$@ 'tagsField'
+--     - A @$date$@ field (formatted <Month name> <day of month>, <year>)
+--     - A @$body$@ field
+--     - Metadata fields
+--     - A @$url$@ 'urlField'
+--     - A @$path$@ 'pathField'
+--     - A @$title$@ 'titleField'
+postContextWithTags :: Tags -> Context String
+postContextWithTags tags =
+    tagsField "tags" tags `mappend` postContext
 
 
-teaserCtx :: Tags -> Context String
-teaserCtx tags =
+-- | A context that contains
+--
+--     - A @$teaser$@ field
+--     - A @$tags$@ 'tagsField'
+--     - A @$date$@ field (formatted <Month name> <day of month>, <year>)
+--     - A @$body$@ field
+--     - Metadata fields
+--     - A @$url$@ 'urlField'
+--     - A @$path$@ 'pathField'
+--     - A @$title$@ 'titleField'
+teaserContext :: Tags -> Context String
+teaserContext tags =
     field "teaser" teaserBody `mappend`
-    (postCtxWithTags tags)
+    (postContextWithTags tags)
 
 
 --------------------------------------------------------------------------------
@@ -255,18 +283,18 @@ urlOfPost =
 rulesForTags :: Tags -> (String -> String) -> Rules ()
 rulesForTags tags titleForTag =
     tagsRules tags $ \tag pattern -> do
-    let title = titleForTag tag -- "Posts tagged \"" ++ tag ++ "\""
-    route idRoute
-    compile $ do
-        posts <- recentFirst =<< loadAll pattern
-        let tagContext = constField "title" title
-                  `mappend` listField "posts" postCtx (return posts)
-                  `mappend` defaultContext
+        let title = titleForTag tag -- "Posts tagged \"" ++ tag ++ "\""
+        route idRoute
+        compile $ do
+            posts <- recentFirst =<< loadAll pattern
+            let tagContext = constField "title" title
+                      `mappend` listField "posts" postContext (return posts)
+                      `mappend` defaultContext
 
-        makeItem ""
-            >>= loadAndApplyTemplate "templates/tag-body.html" tagContext
-            >>= loadAndApplyTemplate "templates/default.html" tagContext
-            >>= relativizeUrls
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/tag-body.html" tagContext
+                >>= loadAndApplyTemplate "templates/default.html" tagContext
+                >>= relativizeUrls
 
 
 --------------------------------------------------------------------------------
