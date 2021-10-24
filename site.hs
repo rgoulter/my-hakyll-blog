@@ -102,9 +102,7 @@ main = do
                     postContextWithTags tags
 
             pandocCompiler
-                >>= saveSnapshot "teaser"
-                >>= loadAndApplyTemplate "templates/post_content.html" postContext
-                >>= saveSnapshot "content"
+                >>= saveSnapshot "postContent"
                 >>= loadAndApplyTemplate "templates/post-body.html" postContext
                 >>= loadAndApplyTemplate "templates/default.html" postContext
                 >>= relativizeUrls
@@ -146,7 +144,7 @@ main = do
             -- Use the blogpost's body as its $description$ in the Atom feed.
             let feedItemContext = defaultContext `mappend` bodyField "description"
             posts <- fmap (take 10) . recentFirst =<<
-                loadAllSnapshots postsGlob "content"
+                loadAllSnapshots postsGlob "postContent"
             renderAtom feedConfiguration feedItemContext posts
 
 
@@ -235,7 +233,7 @@ paginatedPreviewsContext index maxIndex itemsForPage tags categories=
     defaultContext
   where
     loadTeaser :: Identifier -> Compiler String
-    loadTeaser id = loadSnapshot id "teaser"
+    loadTeaser id = loadSnapshot id "postContent"
                         >>= loadAndApplyTemplate "templates/teaser.html" (teaserContext tags)
                         -- >>= relativizeUrls
                         >>= \item -> return $ itemBody item

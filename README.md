@@ -49,7 +49,6 @@ posts/<category>/YYYY-MM-DD-title.markdown
   - `templates/paginated_previews-body.html` (body for "paginated previews")
   - `templates/post-body.html` (body for a blog post)
   - `templates/post_list-body.html` (body for "post list", e.g. archives, posts with some tag)
-  - `templates/post_content.html` (wraps around the content, for both the `atom.xml`, and the blog post web page).
   - `templates/teaser.html` (the template rendered for `paginated_previews-body`'s `$posts$` field).
 
 - Webpages generated dynamically:
