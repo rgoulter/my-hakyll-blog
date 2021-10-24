@@ -109,7 +109,9 @@ main = do
 
 
     paginate 10 $ \index maxIndex itemsForPage -> do
-        let id = fromFilePath $ blogPageForPageIdx index
+        let paginateMakeId :: PageNumber -> Identifier
+            paginateMakeId pageNumber = fromFilePath $ blogPageForPageIdx index
+            id = paginateMakeId index
         create [id] $ do
             route idRoute
             compile $ do
@@ -118,7 +120,7 @@ main = do
                         defaultContext
 
                 makeItem ""
-                    >>= loadAndApplyTemplate "templates/paginated_previews-body.html" (paginatedPreviewsContext index maxIndex itemsForPage tags categories)
+                    >>= loadAndApplyTemplate "templates/paginated_previews-body.html" (paginatedPreviewsContext index maxIndex (fromList itemsForPage) tags categories)
                     >>= loadAndApplyTemplate "templates/default.html" allContext
                     >>= relativizeUrls
 
@@ -222,21 +224,25 @@ teaserContext tags =
 --     - A @$navlinkolder$@ field, which links to the newer page.
 --     - A @$taglist$@ field, which is HTML which contains the tag cloud.
 --     - A @$categorylist$@ field, which is HTML which contains the list of categories.
-paginatedPreviewsContext :: Int -> Int -> [Identifier] -> Tags -> Tags -> Context String
-paginatedPreviewsContext index maxIndex itemsForPage tags categories=
+paginatedPreviewsContext :: Int -> Int -> Pattern -> Tags -> Tags -> Context String
+paginatedPreviewsContext index maxIndex itemsForPagePattern tags categories =
     field "posts"
-          (\_ -> concat <$> (sequence $ map loadTeaser itemsForPage)) `mappend`
+          (\_ -> concatenatedPostTeaserBodies) `mappend`
     constField "nextPageUrl" (indexNavLink index 1 maxIndex) `mappend`
     constField "previousPageUrl" (indexNavLink index (-1) maxIndex) `mappend`
     tagCloudField "taglist" 80 200 tags `mappend`
     tagListLinesField "categorylist" categories `mappend`
     defaultContext
   where
-    loadTeaser :: Identifier -> Compiler String
-    loadTeaser id = loadSnapshot id "postContent"
-                        >>= loadAndApplyTemplate "templates/teaser.html" (teaserContext tags)
-                        -- >>= relativizeUrls
-                        >>= \item -> return $ itemBody item
+    allSnapshots :: Compiler [Item String]
+    allSnapshots = recentFirst =<< loadAllSnapshots itemsForPagePattern "postContent"
+    itemBodyForTeaser :: Item String -> Compiler String
+    itemBodyForTeaser item = itemBody <$> (loadAndApplyTemplate "templates/teaser.html" (teaserContext tags) item)
+    concatenatedPostTeaserBodies :: Compiler String
+    concatenatedPostTeaserBodies =
+        allSnapshots
+        >>= (\snapshots ->
+                 concat <$> (sequence $ map itemBodyForTeaser snapshots))
 
 
 --------------------------------------------------------------------------------
