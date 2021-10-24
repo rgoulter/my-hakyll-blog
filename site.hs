@@ -5,9 +5,9 @@ import Data.Monoid (mappend)
 import Hakyll
 
 import Data.List (isPrefixOf, tails, findIndex, intercalate, sortBy)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isNothing)
 import Control.Applicative (Alternative (..))
-import Control.Monad (forM_, zipWithM_, liftM)
+import Control.Monad ((>=>), forM_, zipWithM_, liftM)
 import GHC.IO.Encoding (setLocaleEncoding, utf8)
 import System.Environment (lookupEnv)
 import System.FilePath (takeFileName)
@@ -30,8 +30,8 @@ import qualified Data.HashMap.Strict as HM
 postsGlob :: Pattern
 postsGlob = "posts/**.markdown"
 
-blogPageForPageIdx :: Int -> String
-blogPageForPageIdx index = (if index==1 then "" else show index ++ "/") ++ "index.html"
+blogPageForPageNumber :: Int -> Identifier
+blogPageForPageNumber index = fromFilePath $ (if index==1 then "" else show index ++ "/") ++ "index.html"
 
 --------------------------------------------------------------------------------
 hakyllConfigFromEnvironment :: IO Configuration
@@ -45,7 +45,7 @@ hakyllConfigFromEnvironment = do
   maybePreviewHost          <- lookupEnv "HAKYLL_PREVIEW_HOST"
   maybePreviewPortStr       <- lookupEnv "HAKYLL_PREVIEW_PORT"
   -- inMemoryCache = False only if the env variable is set to "false".
-  let maybeInMemoryCache = ((==) "false") <$> maybeInMemoryCacheStr
+  let maybeInMemoryCache = ("false" ==) <$> maybeInMemoryCacheStr
   let maybePreviewPort = read <$> maybePreviewPortStr
   return defaultConfiguration
          { destinationDirectory = fromMaybe (destinationDirectory defaultConfiguration) maybeDestinationDirectory
@@ -77,7 +77,7 @@ main = do
         compile compressCssCompiler
 
     match "pages/*" $ do
-        route   $ (gsubRoute "pages/" (const "")) `composeRoutes` setExtension "html"
+        route   $ gsubRoute "pages/" (const "") `composeRoutes` setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/page-body.html" defaultContext
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
@@ -108,11 +108,10 @@ main = do
                 >>= relativizeUrls
 
     paginate <- buildPaginateWith
-                    (\identifiers ->
-                         sortRecentFirst identifiers >>= \identifiers ->
-                         return $ paginateEvery 10 identifiers)
+                    (sortRecentFirst >=>
+                         \identifiers -> return $ paginateEvery 10 identifiers)
                     postsGlob
-                    (\pageNumber -> fromFilePath $ blogPageForPageIdx pageNumber)
+                    blogPageForPageNumber
 
     paginateRules paginate $ \index itemsForPage -> do
         route idRoute
@@ -216,7 +215,7 @@ postContextWithTags tags =
 teaserContext :: Tags -> Context String
 teaserContext tags =
     field "teaser" teaserBody `mappend`
-    (postContextWithTags tags)
+    postContextWithTags tags
 
 
 -- | A context that contains
@@ -229,7 +228,7 @@ teaserContext tags =
 paginatedPreviewsContext :: Paginate -> Int -> Pattern -> Tags -> Tags -> Context String
 paginatedPreviewsContext paginate index itemsForPagePattern tags categories =
     field "posts"
-          (\_ -> concatenatedPostTeaserBodies) `mappend`
+          (const concatenatedPostTeaserBodies) `mappend`
     tagCloudField "taglist" 80 200 tags `mappend`
     tagListLinesField "categorylist" categories `mappend`
     paginateContext paginate index
@@ -237,12 +236,11 @@ paginatedPreviewsContext paginate index itemsForPagePattern tags categories =
     allSnapshots :: Compiler [Item String]
     allSnapshots = recentFirst =<< loadAllSnapshots itemsForPagePattern "postContent"
     itemBodyForTeaser :: Item String -> Compiler String
-    itemBodyForTeaser item = itemBody <$> (loadAndApplyTemplate "templates/teaser.html" (teaserContext tags) item)
+    itemBodyForTeaser item = itemBody <$> loadAndApplyTemplate "templates/teaser.html" (teaserContext tags) item
     concatenatedPostTeaserBodies :: Compiler String
     concatenatedPostTeaserBodies =
         allSnapshots
-        >>= (\snapshots ->
-                 concat <$> (sequence $ map itemBodyForTeaser snapshots))
+        >>= (fmap concat . mapM itemBodyForTeaser)
 
 
 --------------------------------------------------------------------------------
@@ -278,7 +276,7 @@ lookupPostUrl hm post =
     let ident = itemIdentifier post
         ident' = HM.lookup ident hm
     in
-    (fmap (maybe empty $ toUrl) . (maybe empty getRoute)) ident'
+    (fmap (maybe empty toUrl) . (maybe empty getRoute)) ident'
 
 
 --------------------------------------------------------------------------------
@@ -294,7 +292,7 @@ teaserBody item = do
         | otherwise                       = x : extractTeaser xr
 
     maxLengthTeaser :: String -> String
-    maxLengthTeaser s = if findIndex (isPrefixOf "<!-- more -->") (tails s) == Nothing
+    maxLengthTeaser s = if isNothing (findIndex (isPrefixOf "<!-- more -->") (tails s))
                         then unwords (take 60 (words s))
                         else s
 
@@ -315,18 +313,18 @@ teaserBody item = do
 --------------------------------------------------------------------------------
 sortIdentifiersByDate :: [Identifier] -> [Identifier]
 sortIdentifiersByDate identifiers =
-    reverse $ sortBy byDate identifiers
+    sortBy (flip byDate) identifiers
       where
     byDate id1 id2 =
         let fn1 = takeFileName $ toFilePath id1
             fn2 = takeFileName $ toFilePath id2
             parseTime' fn = parseTimeM True defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
-        in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
+        in compare (parseTime' fn1 :: Maybe UTCTime) (parseTime' fn2 :: Maybe UTCTime)
 
 
 --------------------------------------------------------------------------------
 -- | Render a simple tag list in HTML, with the tag count next to the item
-renderTagListLines :: Tags -> Compiler (String)
+renderTagListLines :: Tags -> Compiler String
 renderTagListLines =
     renderTags makeLink (intercalate ",<br>")
   where
@@ -336,6 +334,6 @@ renderTagListLines =
 
 -- | Render a simple tag list in HTML, with the tag count next to the item
 --   (<a> links, separated with ",<br>").
-tagListLinesField :: String -> Tags -> Context (String)
+tagListLinesField :: String -> Tags -> Context String
 tagListLinesField key tags =
    field key $ \_ -> renderTagListLines tags
