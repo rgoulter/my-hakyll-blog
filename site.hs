@@ -226,8 +226,8 @@ paginatedPreviewsContext :: Int -> Int -> [Identifier] -> Tags -> Tags -> Contex
 paginatedPreviewsContext index maxIndex itemsForPage tags categories=
     field "posts"
           (\_ -> concat <$> (sequence $ map loadTeaser itemsForPage)) `mappend`
-    constField "navlinkolder" (indexNavLink index 1 maxIndex) `mappend`
-    constField "navlinknewer" (indexNavLink index (-1) maxIndex) `mappend`
+    constField "nextPageUrl" (indexNavLink index 1 maxIndex) `mappend`
+    constField "previousPageUrl" (indexNavLink index (-1) maxIndex) `mappend`
     tagCloudField "taglist" 80 200 tags `mappend`
     tagListLinesField "categorylist" categories `mappend`
     defaultContext
