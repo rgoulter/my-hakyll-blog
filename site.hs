@@ -126,40 +126,18 @@ main = do
 
 
     tagsRules tags $ \tag postsPattern -> do
-        let title = "Posts tagged \"" ++ tag ++ "\""
         route idRoute
-        compile $ do
-            let context = postListContext title (recentFirst =<< loadAll postsPattern)
-
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/post_list-body.html" context
-                >>= loadAndApplyTemplate "templates/default.html" context
-                >>= relativizeUrls
+        postListRules ("Posts tagged \"" ++ tag ++ "\"") postsPattern
 
 
     tagsRules categories $ \tag postsPattern -> do
-        let title = "Posts in category \"" ++ tag ++ "\""
         route idRoute
-        compile $ do
-            let context = postListContext title (recentFirst =<< loadAll postsPattern)
-
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/post_list-body.html" context
-                >>= loadAndApplyTemplate "templates/default.html" context
-                >>= relativizeUrls
+        postListRules ("Posts in category \"" ++ tag ++ "\"") postsPattern
 
 
     create ["archive.html"] $ do
-        let title = "Archives"
-            postsPattern = postsGlob
         route idRoute
-        compile $ do
-            let context = postListContext title (recentFirst =<< loadAll postsPattern)
-
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/post_list-body.html" context
-                >>= loadAndApplyTemplate "templates/default.html" context
-                >>= relativizeUrls
+        postListRules "Archives" postsGlob
 
 
     create ["atom.xml"] $ do
@@ -261,6 +239,18 @@ paginatedPreviewsContext index maxIndex itemsForPage tags categories=
                         >>= loadAndApplyTemplate "templates/teaser.html" (teaserContext tags)
                         -- >>= relativizeUrls
                         >>= \item -> return $ itemBody item
+
+
+--------------------------------------------------------------------------------
+postListRules :: String -> Pattern -> Rules ()
+postListRules title postsPattern =
+    compile $ do
+        let context = postListContext title (recentFirst =<< loadAll postsPattern)
+
+        makeItem ""
+            >>= loadAndApplyTemplate "templates/post_list-body.html" context
+            >>= loadAndApplyTemplate "templates/default.html" context
+            >>= relativizeUrls
 
 --------------------------------------------------------------------------------
 type AdjPostHM = HM.HashMap Identifier Identifier
