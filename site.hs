@@ -116,10 +116,7 @@ main = do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            let archiveContext =
-                    listField "posts" postContext (loadAll postsGlob >>= recentFirst) `mappend`
-                    constField "title" "Archives" `mappend`
-                    defaultContext
+            let archiveContext = postListContext "Archives" (loadAll postsGlob >>= recentFirst)
 
             makeItem ""
                 >>= loadAndApplyTemplate "templates/archive-body.html" archiveContext
@@ -133,23 +130,11 @@ main = do
             route idRoute
             compile $ do
                 let allContext =
-                        field "title" (\_ -> return "Blog") `mappend`
-                        defaultContext
-                    loadTeaser id = loadSnapshot id "teaser"
-                                        >>= loadAndApplyTemplate "templates/teaser.html" (teaserContext tags)
-                                        -- >>= relativizeUrls
-                items <- sequence $ map loadTeaser itemsForPage
-                let itembodies = map itemBody items
-                    postsContext =
-                        constField "posts" (concat itembodies) `mappend`
-                        field "navlinkolder" (\_ -> return $ indexNavLink index 1 maxIndex) `mappend`
-                        field "navlinknewer" (\_ -> return $ indexNavLink index (-1) maxIndex) `mappend`
-                        tagCloudField "taglist" 80 200 tags `mappend`
-                        field "categorylist" (\_ -> renderTagListLines categories) `mappend`
+                        constField "title" "Blog" `mappend`
                         defaultContext
 
                 makeItem ""
-                    >>= loadAndApplyTemplate "templates/paginated_previews-body.html" postsContext
+                    >>= loadAndApplyTemplate "templates/paginated_previews-body.html" (paginatedPreviewsContext index maxIndex itemsForPage tags categories)
                     >>= loadAndApplyTemplate "templates/default.html" allContext
                     >>= relativizeUrls
 
@@ -158,7 +143,7 @@ main = do
         route idRoute
         compile $ do
             -- Use the blogpost's body as its $description$ in the Atom feed.
-            let feedItemContext = postContext `mappend` bodyField "description"
+            let feedItemContext = defaultContext `mappend` bodyField "description"
             posts <- fmap (take 10) . recentFirst =<<
                 loadAllSnapshots postsGlob "content"
             renderAtom feedConfiguration feedItemContext posts
@@ -181,7 +166,7 @@ feedConfiguration = FeedConfiguration
 
 
 --------------------------------------------------------------------------------
--- | A context that contains
+-- | A context (for the tag-body, archive-body templates) that contains
 --
 --     - A @$date$@ field (formatted <Month name> <day of month>, <year>)
 --     - A @$body$@ field
@@ -189,10 +174,14 @@ feedConfiguration = FeedConfiguration
 --     - A @$url$@ 'urlField'
 --     - A @$path$@ 'pathField'
 --     - A @$title$@ 'titleField'
-postContext :: Context String
-postContext =
-    dateField "date" "%B %e, %Y" `mappend`
+postListContext :: String -> Compiler [Item String] -> Context String
+postListContext title posts =
+    constField "title" title `mappend`
+    listField "posts" postListItemContext posts `mappend`
     defaultContext
+  where
+    postListItemContext = dateField "date" "%B %e, %Y" `mappend`
+                          defaultContext
 
 
 -- | A context that contains
@@ -206,7 +195,9 @@ postContext =
 --     - A @$title$@ 'titleField'
 postContextWithTags :: Tags -> Context String
 postContextWithTags tags =
-    tagsField "tags" tags `mappend` postContext
+    tagsField "tags" tags `mappend`
+    dateField "date" "%B %e, %Y" `mappend`
+    defaultContext
 
 
 -- | A context that contains
@@ -224,6 +215,29 @@ teaserContext tags =
     field "teaser" teaserBody `mappend`
     (postContextWithTags tags)
 
+
+-- | A context that contains
+--
+--     - A @$posts$@ field, which is HTML which contains all the post previews
+--     - A @$navlinkolder$@ field, which links to the older page.
+--     - A @$navlinkolder$@ field, which links to the newer page.
+--     - A @$taglist$@ field, which is HTML which contains the tag cloud.
+--     - A @$categorylist$@ field, which is HTML which contains the list of categories.
+paginatedPreviewsContext :: Int -> Int -> [Identifier] -> Tags -> Tags -> Context String
+paginatedPreviewsContext index maxIndex itemsForPage tags categories=
+    field "posts"
+          (\_ -> concat <$> (sequence $ map loadTeaser itemsForPage)) `mappend`
+    constField "navlinkolder" (indexNavLink index 1 maxIndex) `mappend`
+    constField "navlinknewer" (indexNavLink index (-1) maxIndex) `mappend`
+    tagCloudField "taglist" 80 200 tags `mappend`
+    tagListLinesField "categorylist" categories `mappend`
+    defaultContext
+  where
+    loadTeaser :: Identifier -> Compiler String
+    loadTeaser id = loadSnapshot id "teaser"
+                        >>= loadAndApplyTemplate "templates/teaser.html" (teaserContext tags)
+                        -- >>= relativizeUrls
+                        >>= \item -> return $ itemBody item
 
 --------------------------------------------------------------------------------
 type AdjPostHM = HM.HashMap Identifier Identifier
@@ -282,14 +296,11 @@ urlOfPost =
 --------------------------------------------------------------------------------
 rulesForTags :: Tags -> (String -> String) -> Rules ()
 rulesForTags tags titleForTag =
-    tagsRules tags $ \tag pattern -> do
+    tagsRules tags $ \tag tagPattern -> do
         let title = titleForTag tag -- "Posts tagged \"" ++ tag ++ "\""
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll pattern
-            let tagContext = constField "title" title
-                      `mappend` listField "posts" postContext (return posts)
-                      `mappend` defaultContext
+            let tagContext = postListContext title (recentFirst =<< loadAll tagPattern)
 
             makeItem ""
                 >>= loadAndApplyTemplate "templates/tag-body.html" tagContext
@@ -388,10 +399,16 @@ sortIdentifiersByDate identifiers =
 
 --------------------------------------------------------------------------------
 -- | Render a simple tag list in HTML, with the tag count next to the item
--- TODO: Maybe produce a Context here
 renderTagListLines :: Tags -> Compiler (String)
 renderTagListLines =
     renderTags makeLink (intercalate ",<br>")
   where
     makeLink tag url count _ _ = renderHtml $
         H.a ! A.href (toValue url) $ toHtml (tag ++ " (" ++ show count ++ ")")
+
+
+-- | Render a simple tag list in HTML, with the tag count next to the item
+--   (<a> links, separated with ",<br>").
+tagListLinesField :: String -> Tags -> Context (String)
+tagListLinesField key tags =
+   field key $ \_ -> renderTagListLines tags
