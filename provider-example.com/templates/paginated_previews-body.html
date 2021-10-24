@@ -4,12 +4,22 @@
           $posts$
 
           <div id="navlinks">
-              <div class="story" style="float:left;">
-                  $previousPageUrl$&nbsp;
-              </div>
-              <div class="story" style="float:right; text-align:right;">
-                  $nextPageUrl$&nbsp;
-              </div>
+              $if(previousPageUrl)$
+                  <div class="story" style="float:left;">
+                      <a href="$previousPageUrl$">
+                          &laquo; Newer Entries
+                      </a>
+                      &nbsp;
+                  </div>
+              $endif$
+              $if(nextPageUrl)$
+                  <div class="story" style="float:right; text-align:right;">
+                      <a href="$nextPageUrl$">
+                          Older Entries &raquo;
+                      </a>
+                      &nbsp;
+                  </div>
+              $endif$
           </div>
       </div>
   </div>

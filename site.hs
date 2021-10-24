@@ -107,8 +107,12 @@ main = do
                 >>= loadAndApplyTemplate "templates/default.html" postContext
                 >>= relativizeUrls
 
+    paginate <- buildPaginateWith
+                    (\identifiers -> return $ paginateEvery 10 identifiers)
+                    postsGlob
+                    (\pageNumber -> fromFilePath $ blogPageForPageIdx pageNumber)
 
-    paginate 10 $ \index maxIndex itemsForPage -> do
+    paginateRules paginate $ \index itemsForPage -> do
         let paginateMakeId :: PageNumber -> Identifier
             paginateMakeId pageNumber = fromFilePath $ blogPageForPageIdx index
             id = paginateMakeId index
@@ -120,7 +124,7 @@ main = do
                         defaultContext
 
                 makeItem ""
-                    >>= loadAndApplyTemplate "templates/paginated_previews-body.html" (paginatedPreviewsContext index maxIndex (fromList itemsForPage) tags categories)
+                    >>= loadAndApplyTemplate "templates/paginated_previews-body.html" (paginatedPreviewsContext paginate index itemsForPage tags categories)
                     >>= loadAndApplyTemplate "templates/default.html" allContext
                     >>= relativizeUrls
 
@@ -224,15 +228,13 @@ teaserContext tags =
 --     - A @$navlinkolder$@ field, which links to the newer page.
 --     - A @$taglist$@ field, which is HTML which contains the tag cloud.
 --     - A @$categorylist$@ field, which is HTML which contains the list of categories.
-paginatedPreviewsContext :: Int -> Int -> Pattern -> Tags -> Tags -> Context String
-paginatedPreviewsContext index maxIndex itemsForPagePattern tags categories =
+paginatedPreviewsContext :: Paginate -> Int -> Pattern -> Tags -> Tags -> Context String
+paginatedPreviewsContext paginate index itemsForPagePattern tags categories =
     field "posts"
           (\_ -> concatenatedPostTeaserBodies) `mappend`
-    constField "nextPageUrl" (indexNavLink index 1 maxIndex) `mappend`
-    constField "previousPageUrl" (indexNavLink index (-1) maxIndex) `mappend`
     tagCloudField "taglist" 80 200 tags `mappend`
     tagListLinesField "categorylist" categories `mappend`
-    defaultContext
+    paginateContext paginate index
   where
     allSnapshots :: Compiler [Item String]
     allSnapshots = recentFirst =<< loadAllSnapshots itemsForPagePattern "postContent"
@@ -281,46 +283,6 @@ lookupPostUrl hm post =
     (fmap (maybe empty $ toUrl) . (maybe empty getRoute)) ident'
 
 
-previousPostUrl :: [Identifier] -> Item String -> Compiler String
-previousPostUrl sortedPosts post = do
-    let ident = itemIdentifier post
-        ident' = itemBefore sortedPosts ident
-    (fmap (maybe empty $ toUrl) . (maybe empty getRoute)) ident'
-
-
-nextPostUrl :: [Identifier] -> Item String -> Compiler String
-nextPostUrl sortedPosts post = do
-    let ident = itemIdentifier post
-        ident' = itemAfter sortedPosts ident
-    (fmap (maybe empty $ toUrl) . (maybe empty getRoute)) ident'
-
-
-itemAfter :: Eq a => [a] -> a -> Maybe a
-itemAfter xs x =
-    lookup x $ zip xs (tail xs)
-
-
-itemBefore :: Eq a => [a] -> a -> Maybe a
-itemBefore xs x =
-    lookup x $ zip (tail xs) xs
-
-
-urlOfPost :: Item String -> Compiler String
-urlOfPost =
-    fmap (maybe empty $ toUrl) . getRoute . itemIdentifier
-
-
---------------------------------------------------------------------------------
--- | Split list into equal sized sublists.
--- https://github.com/ian-ross/blog
-chunk :: Int -> [a] -> [[a]]
-chunk n [] = []
-chunk n xs =
-    ys : chunk n zs
-  where
-    (ys,zs) = splitAt n xs
-
-
 --------------------------------------------------------------------------------
 teaserBody :: Item String -> Compiler String
 teaserBody item = do
@@ -353,41 +315,6 @@ teaserBody item = do
 
 
 --------------------------------------------------------------------------------
--- | Generate navigation link HTML for stepping between index pages.
--- https://github.com/ian-ross/blog
---
-indexNavLink :: Int -> Int -> Int -> String
-indexNavLink n d maxn =
-    renderHtml ref
-  where
-    ref = if (refPage == "")
-          then ""
-          else H.a ! A.href (toValue $ toUrl $ refPage) $ (preEscapedString lab)
-    lab = if (d > 0) then "Older Entries &raquo;" else "&laquo; Newer Entries"
-    refPage = if (n + d < 1 || n + d > maxn)
-              then ""
-              else blogPageForPageIdx (n + d)
-
-
---------------------------------------------------------------------------------
-paginate:: Int -> (Int -> Int -> [Identifier] -> Rules ()) -> Rules ()
-paginate itemsPerPage rules = do
-    identifiers <- getMatches postsGlob
-
-    let sorted = reverse $ sortBy byDate identifiers
-        chunks = chunk itemsPerPage sorted
-        maxIndex = length chunks
-        pageNumbers = take maxIndex [1..]
-        process i is = rules i maxIndex is
-    zipWithM_ process pageNumbers chunks
-      where
-    byDate id1 id2 =
-        let fn1 = takeFileName $ toFilePath id1
-            fn2 = takeFileName $ toFilePath id2
-            parseTime' fn = parseTimeM True defaultTimeLocale "%Y-%m-%d" $ intercalate "-" $ take 3 $ splitAll "-" fn
-        in compare ((parseTime' fn1) :: Maybe UTCTime) ((parseTime' fn2) :: Maybe UTCTime)
-
-
 sortIdentifiersByDate :: [Identifier] -> [Identifier]
 sortIdentifiersByDate identifiers =
     reverse $ sortBy byDate identifiers
