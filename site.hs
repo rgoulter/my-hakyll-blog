@@ -88,10 +88,6 @@ main = do
 
     categories <- buildCategories postsGlob (fromCapture "categories/*.html")
 
-    rulesForTags categories (\tag -> "Posts in category \"" ++ tag ++ "\"")
-
-    rulesForTags tags (\tag -> "Posts tagged \"" ++ tag ++ "\"")
-
     allPosts <- getMatches postsGlob
     let sortedPosts = sortIdentifiersByDate allPosts
         -- build hashmap of prev/next posts
@@ -113,16 +109,6 @@ main = do
                 >>= loadAndApplyTemplate "templates/default.html" postContext
                 >>= relativizeUrls
 
-    create ["archive.html"] $ do
-        route idRoute
-        compile $ do
-            let archiveContext = postListContext "Archives" (loadAll postsGlob >>= recentFirst)
-
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/archive-body.html" archiveContext
-                >>= loadAndApplyTemplate "templates/default.html" archiveContext
-                >>= relativizeUrls
-
 
     paginate 10 $ \index maxIndex itemsForPage -> do
         let id = fromFilePath $ blogPageForPageIdx index
@@ -137,6 +123,43 @@ main = do
                     >>= loadAndApplyTemplate "templates/paginated_previews-body.html" (paginatedPreviewsContext index maxIndex itemsForPage tags categories)
                     >>= loadAndApplyTemplate "templates/default.html" allContext
                     >>= relativizeUrls
+
+
+    tagsRules tags $ \tag postsPattern -> do
+        let title = "Posts tagged \"" ++ tag ++ "\""
+        route idRoute
+        compile $ do
+            let context = postListContext title (recentFirst =<< loadAll postsPattern)
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/post_list-body.html" context
+                >>= loadAndApplyTemplate "templates/default.html" context
+                >>= relativizeUrls
+
+
+    tagsRules categories $ \tag postsPattern -> do
+        let title = "Posts in category \"" ++ tag ++ "\""
+        route idRoute
+        compile $ do
+            let context = postListContext title (recentFirst =<< loadAll postsPattern)
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/post_list-body.html" context
+                >>= loadAndApplyTemplate "templates/default.html" context
+                >>= relativizeUrls
+
+
+    create ["archive.html"] $ do
+        let title = "Archives"
+            postsPattern = postsGlob
+        route idRoute
+        compile $ do
+            let context = postListContext title (recentFirst =<< loadAll postsPattern)
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/post_list-body.html" context
+                >>= loadAndApplyTemplate "templates/default.html" context
+                >>= relativizeUrls
 
 
     create ["atom.xml"] $ do
@@ -291,21 +314,6 @@ itemBefore xs x =
 urlOfPost :: Item String -> Compiler String
 urlOfPost =
     fmap (maybe empty $ toUrl) . getRoute . itemIdentifier
-
-
---------------------------------------------------------------------------------
-rulesForTags :: Tags -> (String -> String) -> Rules ()
-rulesForTags tags titleForTag =
-    tagsRules tags $ \tag tagPattern -> do
-        let title = titleForTag tag -- "Posts tagged \"" ++ tag ++ "\""
-        route idRoute
-        compile $ do
-            let tagContext = postListContext title (recentFirst =<< loadAll tagPattern)
-
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/tag-body.html" tagContext
-                >>= loadAndApplyTemplate "templates/default.html" tagContext
-                >>= relativizeUrls
 
 
 --------------------------------------------------------------------------------

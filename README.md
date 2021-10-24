@@ -44,14 +44,13 @@ posts/<category>/YYYY-MM-DD-title.markdown
 - Static Assets: under `js/`, `images/`, `css/` directory.
 
 - Templates:
-  - `templates/default.html`
-  - `templates/archive-body.html`
-  - `templates/page-body.html`
-  - `templates/paginated_previews-body.html`
-  - `templates/post-body.html`
-  - `templates/tag-body.html`
-  - `templates/post_content.html`
-  - `templates/teaser.html`
+  - `templates/default.html` (which embeds a `$body$`, used by all the web pages).
+  - `templates/page-body.html` (body for the `pages/`).
+  - `templates/paginated_previews-body.html` (body for "paginated previews")
+  - `templates/post-body.html` (body for a blog post)
+  - `templates/post_list-body.html` (body for "post list", e.g. archives, posts with some tag)
+  - `templates/post_content.html` (wraps around the content, for both the `atom.xml`, and the blog post web page).
+  - `templates/teaser.html` (the template rendered for `paginated_previews-body`'s `$posts$` field).
 
 - Webpages generated dynamically:
   - `atom.xml` :: RSS feed of posts with title.
