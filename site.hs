@@ -108,25 +108,23 @@ main = do
                 >>= relativizeUrls
 
     paginate <- buildPaginateWith
-                    (\identifiers -> return $ paginateEvery 10 identifiers)
+                    (\identifiers ->
+                         sortRecentFirst identifiers >>= \identifiers ->
+                         return $ paginateEvery 10 identifiers)
                     postsGlob
                     (\pageNumber -> fromFilePath $ blogPageForPageIdx pageNumber)
 
     paginateRules paginate $ \index itemsForPage -> do
-        let paginateMakeId :: PageNumber -> Identifier
-            paginateMakeId pageNumber = fromFilePath $ blogPageForPageIdx index
-            id = paginateMakeId index
-        create [id] $ do
-            route idRoute
-            compile $ do
-                let allContext =
-                        constField "title" "Blog" `mappend`
-                        defaultContext
+        route idRoute
+        compile $ do
+            let allContext =
+                    constField "title" "Blog" `mappend`
+                    defaultContext
 
-                makeItem ""
-                    >>= loadAndApplyTemplate "templates/paginated_previews-body.html" (paginatedPreviewsContext paginate index itemsForPage tags categories)
-                    >>= loadAndApplyTemplate "templates/default.html" allContext
-                    >>= relativizeUrls
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/paginated_previews-body.html" (paginatedPreviewsContext paginate index itemsForPage tags categories)
+                >>= loadAndApplyTemplate "templates/default.html" allContext
+                >>= relativizeUrls
 
 
     tagsRules tags $ \tag postsPattern -> do
