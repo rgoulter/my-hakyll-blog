@@ -10,6 +10,4 @@ nixpkgs.mkShell {
     Cocoa
     CoreServices
   ]);
-
-  HAKYLL_PROVIDER_DIRECTORY = "provider-example.com";
 }

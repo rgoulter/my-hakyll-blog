@@ -152,7 +152,7 @@ Using [nix](https://nixos.org/) to retrieve the GHC version:
 e.g. to run the `build` Hakyll command:
 
 ```
-stack --nix-shell-file=shell.nix run -- build
+stack --nix-shell-file=stack-shell.nix run -- build
 ```
 
 To build the site with the `provider-example.com` sample content:
