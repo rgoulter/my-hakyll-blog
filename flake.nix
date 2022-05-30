@@ -4,15 +4,7 @@
   description = "static site generator using hakyll";
 
   inputs = {
-    # A sufficiently old version of nixpkgs such that
-    # it has ghc 8.4.3.
-    #
-    # Details found by using lazamar's nix package versions tool:
-    #   https://lazamar.co.uk/nix-versions/
-    nixpkgs = {
-      url = "github:NixOS/nixpkgs/a3962299f14944a0e9ccf8fd84bd7be524b74cd6";
-      flake = false;
-    };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -20,7 +12,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = (import nixpkgs { inherit system; }).pkgs;
-        compiler = "ghc843";
+        compiler = "ghc902";
       in rec {
         packages.my-hakyll-blog =
           pkgs.haskell.packages.${compiler}.callPackage ./my-hakyll-blog.nix { };

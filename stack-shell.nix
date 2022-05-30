@@ -1,5 +1,5 @@
-{ nixpkgs ? import ./nixpkgs-with-ghc843.nix
-, compiler ? "ghc843"
+{ nixpkgs ? import <nixpkgs> {}
+, compiler ? "ghc902"
 }:
 
 nixpkgs.mkShell {
