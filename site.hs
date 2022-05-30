@@ -23,6 +23,8 @@ import qualified Text.Blaze.Html5.Attributes as A
 import Data.Hashable (Hashable, hashWithSalt)
 import qualified Data.HashMap.Strict as HM
 
+import qualified Text.Pandoc as PD
+
 -- for tags, follow tutorial from:
 -- http://javran.github.io/posts/2014-03-01-add-tags-to-your-hakyll-blog.html
 
@@ -161,6 +163,8 @@ pandocCompiler' :: Compiler (Item String)
 pandocCompiler' = pandocCompilerWith
   defaultHakyllReaderOptions
   defaultHakyllWriterOptions
+    { PD.writerHighlightStyle = Nothing
+    }
 
 
 --------------------------------------------------------------------------------

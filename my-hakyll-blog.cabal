@@ -24,6 +24,7 @@ executable my-hakyll-blog
                      , filepath
                      , hakyll
                      , hashable
+                     , pandoc
                      , time
                      , unordered-containers
   ghc-options: -threaded
