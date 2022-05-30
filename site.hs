@@ -78,7 +78,7 @@ main = do
 
     match "pages/*" $ do
         route   $ gsubRoute "pages/" (const "") `composeRoutes` setExtension "html"
-        compile $ pandocCompiler
+        compile $ pandocCompiler'
             >>= loadAndApplyTemplate "templates/page-body.html" defaultContext
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
@@ -101,7 +101,7 @@ main = do
                     field "prevPost" (lookupPostUrl prevPostHM) `mappend`
                     postContextWithTags tags
 
-            pandocCompiler
+            pandocCompiler'
                 >>= saveSnapshot "postContent"
                 >>= loadAndApplyTemplate "templates/post-body.html" postContext
                 >>= loadAndApplyTemplate "templates/default.html" postContext
@@ -152,6 +152,15 @@ main = do
 
 
     match "templates/*" $ compile templateCompiler
+
+
+--------------------------------------------------------------------------------
+-- | Pandoc compiler settings.
+--
+pandocCompiler' :: Compiler (Item String)
+pandocCompiler' = pandocCompilerWith
+  defaultHakyllReaderOptions
+  defaultHakyllWriterOptions
 
 
 --------------------------------------------------------------------------------
