@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 #! nix-shell -i python3 -p python3 python39Packages.jinja2
 
-import jinja2
+import os
 import re
 import time
+
+import jinja2
 
 # Get a title for the post
 postTitle = input("Enter post title: ")
@@ -33,7 +35,8 @@ def clean(s):
 yyyymmdd = time.strftime("%Y-%m-%d-")
 cleanTitle = clean(yyyymmdd + postTitle)
 
-filename = "posts/%s.markdown" % cleanTitle
+provider = os.environ.get("HAKYLL_PROVIDER_DIRECTORY", ".")
+filename = "%s/posts/%s.markdown" % (provider, cleanTitle)
 
 # Output content to file
 if len(postTitle) > 0:
