@@ -27,7 +27,10 @@
 
         defaultPackage = self.packages.${system}.my-hakyll-blog;
 
-        apps.my-hakyll-blog = flake-utils.lib.mkApp { drv = packages.my-hakyll-blog; };
+        apps = {
+          default = apps.my-hakyll-blog;
+          my-hakyll-blog = flake-utils.lib.mkApp { drv = packages.my-hakyll-blog; };
+        };
 
         defaultApp = apps.my-hakyll-blog;
 
