@@ -8,33 +8,35 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = (import nixpkgs { inherit system; }).pkgs;
-        compiler = "ghc902";
-      in rec {
-        packages.my-hakyll-blog =
-          pkgs.haskell.packages.${compiler}.callPackage ./my-hakyll-blog.nix { };
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+  }:
+    flake-utils.lib.eachDefaultSystem (system: let
+      pkgs = (import nixpkgs {inherit system;}).pkgs;
+      compiler = "ghc902";
+    in rec {
+      packages.my-hakyll-blog =
+        pkgs.haskell.packages.${compiler}.callPackage ./my-hakyll-blog.nix {};
 
-        defaultPackage = self.packages.${system}.my-hakyll-blog;
+      defaultPackage = self.packages.${system}.my-hakyll-blog;
 
-        apps = {
-          default = apps.my-hakyll-blog;
-          my-hakyll-blog = flake-utils.lib.mkApp { drv = packages.my-hakyll-blog; };
-        };
+      apps = {
+        default = apps.my-hakyll-blog;
+        my-hakyll-blog = flake-utils.lib.mkApp {drv = packages.my-hakyll-blog;};
+      };
 
-        defaultApp = apps.my-hakyll-blog;
+      defaultApp = apps.my-hakyll-blog;
 
-        devShell = pkgs.mkShell {
-          buildInputs = with pkgs.haskellPackages; [
-            haskell-language-server
-            ghcid
-            cabal-install
-            unordered-containers
-          ];
-          inputsFrom = [ defaultPackage ];
-        };
-      });
+      devShell = pkgs.mkShell {
+        buildInputs = with pkgs.haskellPackages; [
+          haskell-language-server
+          ghcid
+          cabal-install
+          unordered-containers
+        ];
+        inputsFrom = [defaultPackage];
+      };
+    });
 }
-
