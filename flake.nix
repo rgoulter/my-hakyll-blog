@@ -31,8 +31,9 @@
             haskell-language-server
             ghcid
             cabal-install
+            unordered-containers
           ];
-          inputsFrom = builtins.attrValues self.packages.${system};
+          inputsFrom = [ defaultPackage ];
         };
       });
 }
