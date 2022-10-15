@@ -24,11 +24,6 @@
         default = self.packages.${system}.my-hakyll-blog;
       };
 
-      apps = {
-        default = apps.my-hakyll-blog;
-        my-hakyll-blog = flake-utils.lib.mkApp {drv = packages.my-hakyll-blog;};
-      };
-
       devShells.default = pkgs.mkShell {
         buildInputs = with pkgs.haskellPackages; [
           haskell-language-server
