@@ -15,7 +15,8 @@
   }:
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = (import nixpkgs {inherit system;}).pkgs;
-      compiler = "ghc902";
+      # c.f. pkgs/top-level/haskell-packages.nix
+      compiler = "ghc92";
     in rec {
       packages = {
         my-hakyll-blog =
