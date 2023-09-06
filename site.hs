@@ -62,15 +62,15 @@ main = do
   setLocaleEncoding utf8
   hakyllConfig <- hakyllConfigFromEnvironment
   hakyllWith hakyllConfig $ do
-    match "images/*" $ do
+    match "images/**" $ do
       route idRoute
       compile copyFileCompiler
 
-    match "js/*" $ do
+    match "js/**" $ do
       route idRoute
       compile copyFileCompiler
 
-    match "css/*" $ do
+    match "css/**" $ do
       route idRoute
       compile compressCssCompiler
 
