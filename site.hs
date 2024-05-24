@@ -19,6 +19,7 @@ import Text.Blaze.Html.Renderer.String (renderHtml)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Pandoc as PD
+import Text.Pandoc.Highlighting (Style, pygments, styleToCss)
 
 -- for tags, follow tutorial from:
 -- http://javran.github.io/posts/2014-03-01-add-tags-to-your-hakyll-blog.html
@@ -138,6 +139,11 @@ main = do
       route idRoute
       postListRules "Archives" postsGlob
 
+    create ["css/syntax.css"] $ do
+      route idRoute
+      compile $ do
+        makeItem $ styleToCss pandocHighlightStyle
+
     create ["atom.xml"] $ do
       route idRoute
       compile $ do
@@ -152,13 +158,17 @@ main = do
 
 --------------------------------------------------------------------------------
 
+-- | Pandoc style theme to use for code highlighting.
+pandocHighlightStyle :: Style
+pandocHighlightStyle = pygments
+
 -- | Pandoc compiler settings.
 pandocCompiler' :: Compiler (Item String)
 pandocCompiler' =
   pandocCompilerWith
     defaultHakyllReaderOptions
     defaultHakyllWriterOptions
-      { PD.writerHighlightStyle = Nothing
+      { PD.writerHighlightStyle = Just pandocHighlightStyle
       }
 
 --------------------------------------------------------------------------------
