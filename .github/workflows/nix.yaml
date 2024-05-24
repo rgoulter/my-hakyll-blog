@@ -17,7 +17,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-          - macos-13
+          # - macos-13 # takes about 2x as long as other `os`.
 
     steps:
       - name: Checkout code
