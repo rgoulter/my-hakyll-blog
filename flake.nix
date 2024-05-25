@@ -16,23 +16,17 @@
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = (import nixpkgs {inherit system;}).pkgs;
       # c.f. pkgs/top-level/haskell-packages.nix
-      compiler = "ghc92";
+      ghcVersion = "92";
     in rec {
       packages = {
-        my-hakyll-blog =
-          pkgs.haskell.packages.${compiler}.callPackage ./my-hakyll-blog.nix {};
+        my-hakyll-blog = self.packages.${system}.default;
 
-        default = self.packages.${system}.my-hakyll-blog;
+        default = pkgs.callPackage ./default.nix { inherit ghcVersion; };
       };
 
-      devShells.default = pkgs.mkShell {
-        buildInputs = with pkgs.haskellPackages; [
-          haskell-language-server
-          ghcid
-          cabal-install
-          unordered-containers
-        ];
-        inputsFrom = [self.packages.${system}.default];
+      devShells.default = import ./shell.nix {
+        inherit pkgs ghcVersion;
+        my-hakyll-blog = self.packages.${system}.my-hakyll-blog;
       };
     });
 }
