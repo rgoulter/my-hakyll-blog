@@ -21,5 +21,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.stack
+            .stack-work
+          key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock') }}
+
       - name: Run Stack Build
         run: stack build
