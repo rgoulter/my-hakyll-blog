@@ -21,7 +21,7 @@
       packages = {
         my-hakyll-blog = self.packages.${system}.default;
 
-        default = pkgs.callPackage ./default.nix { inherit ghcVersion; };
+        default = pkgs.callPackage ./default.nix {inherit ghcVersion;};
       };
 
       devShells.default = import ./shell.nix {

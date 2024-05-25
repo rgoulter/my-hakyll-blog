@@ -355,7 +355,8 @@ renderTagListLines =
   where
     makeLink tag url count _ _ =
       renderHtml $
-        H.a ! A.href (toValue url) $ toHtml (tag ++ " (" ++ show count ++ ")")
+        H.a ! A.href (toValue url) $
+          toHtml (tag ++ " (" ++ show count ++ ")")
 
 -- | Render a simple tag list in HTML, with the tag count next to the item
 --   (<a> links, separated with ",<br>").
