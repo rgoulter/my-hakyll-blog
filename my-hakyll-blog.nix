@@ -1,12 +1,13 @@
-{ mkDerivation
-, base
-, blaze-html
-, filepath
-, hakyll
-, hashable
-, lib
-, time
-, unordered-containers
+{
+  mkDerivation,
+  base,
+  blaze-html,
+  filepath,
+  hakyll,
+  hashable,
+  lib,
+  time,
+  unordered-containers,
 }:
 mkDerivation {
   pname = "my-hakyll-blog";
