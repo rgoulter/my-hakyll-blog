@@ -1,6 +1,6 @@
 {
   nixpkgs ? import <nixpkgs> {},
-  compiler ? "ghc902",
+  compiler ? "ghc92",
 }:
 nixpkgs.mkShell {
   buildInputs = with nixpkgs;
