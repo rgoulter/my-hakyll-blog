@@ -1,5 +1,4 @@
-{
-  nixpkgs ? import <nixpkgs> {},
-  compiler ? "ghc92",
+{ pkgs ? import <nixpkgs> {}
+, ghcVersion ? "92"
 }:
-nixpkgs.pkgs.haskell.packages.${compiler}.callPackage ./my-hakyll-blog.nix {}
+pkgs.haskell.packages.${"ghc" + ghcVersion}.callPackage ./my-hakyll-blog.nix {}
