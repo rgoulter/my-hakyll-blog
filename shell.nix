@@ -1,5 +1,13 @@
-{
-  nixpkgs ? import <nixpkgs> {},
-  compiler ? "ghc92",
+{ pkgs ? import <nixpkgs> {}
+, my-hakyll-blog ? import ./default.nix {}
+, ghcVersion ? "92"
 }:
-(import ./default.nix {inherit nixpkgs compiler;}).env
+
+pkgs.mkShell {
+  packages = with pkgs; [
+    (haskell-language-server.override { supportedGhcVersions = [ ghcVersion ]; })
+    ghcid
+    cabal-install
+  ];
+  inputsFrom = [ my-hakyll-blog ];
+}
