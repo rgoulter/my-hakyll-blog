@@ -16,7 +16,7 @@
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = (import nixpkgs {inherit system;}).pkgs;
       # c.f. pkgs/top-level/haskell-packages.nix
-      ghcVersion = "92";
+      ghcVersion = "965";
     in rec {
       packages = {
         my-hakyll-blog = self.packages.${system}.default;

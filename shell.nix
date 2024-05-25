@@ -1,6 +1,6 @@
 { pkgs ? import <nixpkgs> {}
 , my-hakyll-blog ? import ./default.nix {}
-, ghcVersion ? "92"
+, ghcVersion ? "965"
 }:
 
 pkgs.mkShell {
