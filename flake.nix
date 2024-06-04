@@ -5,14 +5,15 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    systems.url = "github:nix-systems/default";
   };
 
   outputs = {
     self,
     nixpkgs,
+    systems,
   }: let
-      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
-      eachSystem = nixpkgs.lib.genAttrs systems;
+      eachSystem = nixpkgs.lib.genAttrs (import systems);
       # c.f. pkgs/top-level/haskell-packages.nix
       ghcVersion = "965";
     in {
