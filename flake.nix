@@ -5,28 +5,32 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = {
     self,
     nixpkgs,
-    flake-utils,
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = (import nixpkgs {inherit system;}).pkgs;
+  }: let
+      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      eachSystem = nixpkgs.lib.genAttrs systems;
       # c.f. pkgs/top-level/haskell-packages.nix
       ghcVersion = "965";
-    in rec {
-      packages = {
+    in {
+      packages = eachSystem (system: let
+        pkgs = (import nixpkgs {inherit system;}).pkgs;
+      in {
         my-hakyll-blog = self.packages.${system}.default;
 
         default = pkgs.callPackage ./default.nix {inherit ghcVersion;};
-      };
+      });
 
-      devShells.default = import ./shell.nix {
-        inherit pkgs ghcVersion;
-        my-hakyll-blog = self.packages.${system}.my-hakyll-blog;
-      };
-    });
+      devShells = eachSystem (system: let
+        pkgs = (import nixpkgs {inherit system;}).pkgs;
+      in {
+        default = import ./shell.nix {
+          inherit pkgs ghcVersion;
+          my-hakyll-blog = self.packages.${system}.my-hakyll-blog;
+        };
+      });
+    };
 }
