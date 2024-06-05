@@ -4,6 +4,10 @@
   description = "static site generator using hakyll";
 
   inputs = {
+    devenv = {
+      url = "github:cachix/devenv";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     systems.url = "github:nix-systems/default";
     treefmt-nix = {
@@ -12,8 +16,9 @@
     };
   };
 
-  outputs = {
+  outputs = inputs @ {
     self,
+    devenv,
     nixpkgs,
     systems,
     treefmt-nix,
@@ -40,9 +45,15 @@
     devShells = eachSystem (system: let
       pkgs = (import nixpkgs {inherit system;}).pkgs;
     in {
-      default = import ./shell.nix {
-        inherit pkgs ghcVersion;
-        my-hakyll-blog = self.packages.${system}.my-hakyll-blog;
+      default = devenv.lib.mkShell {
+        inherit inputs pkgs;
+
+        modules = [
+          ({pkgs, ...}: {
+            languages.haskell.package = pkgs.haskell.packages.${"ghc" + ghcVersion}.ghc;
+          })
+          (import ./devenv.nix)
+        ];
       };
     });
   };

@@ -11,3 +11,5 @@ cabal.sandbox.config
 result
 provider-rgoulter.com*
 dist-newstyle
+.direnv
+.devenv
