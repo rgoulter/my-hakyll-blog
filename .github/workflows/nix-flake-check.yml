@@ -26,4 +26,5 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: Run Nix Flake Check
-        run: nix flake check
+        # devenv needs `--impure`
+        run: nix flake check --impure
