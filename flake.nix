@@ -25,13 +25,15 @@
     systems,
     treefmt-nix,
   }: let
-    eachSystem = nixpkgs.lib.genAttrs (import systems);
-    treefmtEval = eachSystem (system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix);
     # c.f. pkgs/top-level/haskell-packages.nix
     ghcVersion = "965";
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = import systems;
+
+      imports = [
+        treefmt-nix.flakeModule
+      ];
 
       perSystem = {
         config,
@@ -39,10 +41,6 @@
         system,
         ...
       }: {
-        checks = {
-          formatting = treefmtEval.${system}.config.build.check self;
-        };
-
         devShells = {
           default = devenv.lib.mkShell {
             inherit inputs pkgs;
@@ -56,13 +54,13 @@
           };
         };
 
-        formatter = treefmtEval.${system}.config.build.wrapper;
-
         packages = {
           my-hakyll-blog = self.packages.${system}.default;
 
           default = pkgs.callPackage ./default.nix {inherit ghcVersion;};
         };
+
+        treefmt = import ./treefmt.nix;
       };
     };
 }
