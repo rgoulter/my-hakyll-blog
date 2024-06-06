@@ -1,15 +1,26 @@
 {
-  pkgs,
   config,
+  lib,
+  pkgs,
   ...
 }: {
-  packages = with pkgs; [
-    treefmt
-  ];
+  options = {
+    programs.treefmt = {
+      package = lib.mkOption {
+        defaultText = lib.literalMD "package for running `treefmt` in devshell";
+      };
+    };
+  };
 
-  languages = {
-    haskell.enable = true;
-    nix.enable = true;
-    python.enable = true;
+  config = {
+    packages = with pkgs; [
+      config.programs.treefmt.package
+    ];
+
+    languages = {
+      haskell.enable = true;
+      nix.enable = true;
+      python.enable = true;
+    };
   };
 }
