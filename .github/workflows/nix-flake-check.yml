@@ -26,5 +26,5 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: Run Nix Flake Check
-        # devenv needs `--impure`
-        run: nix flake check --impure
+        # devenv needs devenv-root
+        run: nix flake check --override-input devenv-root "file+file://"<(printf %s "$PWD")
