@@ -8,6 +8,7 @@
       url = "github:cachix/devenv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     systems.url = "github:nix-systems/default";
     treefmt-nix = {
@@ -19,6 +20,7 @@
   outputs = inputs @ {
     self,
     devenv,
+    flake-parts,
     nixpkgs,
     systems,
     treefmt-nix,
@@ -27,34 +29,48 @@
     treefmtEval = eachSystem (system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix);
     # c.f. pkgs/top-level/haskell-packages.nix
     ghcVersion = "965";
-  in {
-    checks = eachSystem (system: {
-      formatting = treefmtEval.${system}.config.build.check self;
-    });
+    flake = {
+      checks = eachSystem (system: {
+        formatting = treefmtEval.${system}.config.build.check self;
+      });
 
-    formatter = eachSystem (system: treefmtEval.${system}.config.build.wrapper);
+      formatter = eachSystem (system: treefmtEval.${system}.config.build.wrapper);
 
-    packages = eachSystem (system: let
-      pkgs = (import nixpkgs {inherit system;}).pkgs;
-    in {
-      my-hakyll-blog = self.packages.${system}.default;
+      packages = eachSystem (system: let
+        pkgs = (import nixpkgs {inherit system;}).pkgs;
+      in {
+        my-hakyll-blog = self.packages.${system}.default;
 
-      default = pkgs.callPackage ./default.nix {inherit ghcVersion;};
-    });
+        default = pkgs.callPackage ./default.nix {inherit ghcVersion;};
+      });
 
-    devShells = eachSystem (system: let
-      pkgs = (import nixpkgs {inherit system;}).pkgs;
-    in {
-      default = devenv.lib.mkShell {
-        inherit inputs pkgs;
+      devShells = eachSystem (system: let
+        pkgs = (import nixpkgs {inherit system;}).pkgs;
+      in {
+        default = devenv.lib.mkShell {
+          inherit inputs pkgs;
 
-        modules = [
-          ({pkgs, ...}: {
-            languages.haskell.package = pkgs.haskell.packages.${"ghc" + ghcVersion}.ghc;
-          })
-          (import ./devenv.nix)
-        ];
+          modules = [
+            ({pkgs, ...}: {
+              languages.haskell.package = pkgs.haskell.packages.${"ghc" + ghcVersion}.ghc;
+            })
+            (import ./devenv.nix)
+          ];
+        };
+      });
+    };
+  in
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      inherit flake;
+
+      systems = import systems;
+
+      perSystem = {
+        config,
+        pkgs,
+        system,
+        ...
+      }: {
       };
-    });
-  };
+    };
 }
