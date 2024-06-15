@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: {
   options = {
@@ -13,7 +12,7 @@
   };
 
   config = {
-    packages = with pkgs; [
+    packages = [
       config.programs.treefmt.package
     ];
 
