@@ -63,20 +63,35 @@ main = do
   setLocaleEncoding utf8
   hakyllConfig <- hakyllConfigFromEnvironment
   hakyllWith hakyllConfig $ do
+    -- Prefix all routes with "blog/"
+    let blogRoutePrefix r = prefixRouteWith "blog/" `composeRoutes` r
+
+    -----------------------------------------------------------------------------
+    -- Static Content
+    -- Copy the images, js, css, etc. to the output directory
+    -----------------------------------------------------------------------------
+
     match "images/**" $ do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       compile copyFileCompiler
 
     match "js/**" $ do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       compile copyFileCompiler
 
     match "css/**" $ do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       compile compressCssCompiler
 
+    -----------------------------------------------------------------------------
+    -- Pandoc-compiled Output
+    -----------------------------------------------------------------------------
+
+    -- Take markdown from pages/*.markdown,
+    -- delete the "pages/" part from route,
+    -- so e.g. pages/foo.markdown -> blog/foo.html
     match "pages/*" $ do
-      route $ gsubRoute "pages/" (const "") `composeRoutes` setExtension "html"
+      route $ blogRoutePrefix $ gsubRoute "pages/" (const "") `composeRoutes` setExtension "html"
       compile $
         pandocCompiler'
           >>= loadAndApplyTemplate "templates/page-body.html" defaultContext
@@ -93,8 +108,13 @@ main = do
         -- build hashmap of prev/next posts
         (prevPostHM, nextPostHM) = buildAdjacentPostsHashMap sortedPosts
 
+    -- Each blogpost,
+    --     to: posts/<category>/<date>-<title>.markdown
+    --   from: blog/posts/<category>/<date>-<title>.html
+    --
+    -- (category sometimes empty).
     match postsGlob $ do
-      route $ setExtension "html"
+      route $ blogRoutePrefix $ setExtension "html"
       compile $ do
         let postContext =
               field "nextPost" (lookupPostUrl nextPostHM)
@@ -107,6 +127,11 @@ main = do
           >>= loadAndApplyTemplate "templates/default.html" postContext
           >>= relativizeUrls
 
+    -----------------------------------------------------------------------------
+    -- Blog "support" pages
+    --   (post pagination, tags, etc.)
+    -----------------------------------------------------------------------------
+
     paginate <-
       buildPaginateWith
         ( sortRecentFirst
@@ -115,8 +140,10 @@ main = do
         postsGlob
         blogPageForPageNumber
 
+    -- Blog pagination:
+    --   to: index.html, 2/index.html, 3/index.html, etc.
     paginateRules paginate $ \index itemsForPage -> do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       compile $ do
         let allContext =
               constField "title" "Blog"
@@ -127,25 +154,32 @@ main = do
           >>= loadAndApplyTemplate "templates/default.html" allContext
           >>= relativizeUrls
 
+    -- Blog tags:
+    --   to: tags/<tag>.html
     tagsRules tags $ \tag postsPattern -> do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       postListRules ("Posts tagged \"" ++ tag ++ "\"") postsPattern
 
+    -- Blog categories:
+    --   to: tags/<tag>.html
     tagsRules categories $ \tag postsPattern -> do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       postListRules ("Posts in category \"" ++ tag ++ "\"") postsPattern
 
+    -- List of all blog posts in one page.
     create ["archive.html"] $ do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       postListRules "Archives" postsGlob
 
+    -- Dynamically generate CSS file for pandoc syntax highlighting.
     create ["css/syntax.css"] $ do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       compile $ do
         makeItem $ styleToCss pandocHighlightStyle
 
+    -- Blog atom feed.
     create ["atom.xml"] $ do
-      route idRoute
+      route $ blogRoutePrefix idRoute
       compile $ do
         -- Use the blogpost's body as its $description$ in the Atom feed.
         let feedItemContext = defaultContext `mappend` bodyField "description"
@@ -154,6 +188,7 @@ main = do
             =<< loadAllSnapshots postsGlob "postContent"
         renderAtom feedConfiguration feedItemContext posts
 
+    -- Register templates.
     match "templates/*" $ compile templateCompiler
 
 --------------------------------------------------------------------------------
@@ -170,6 +205,13 @@ pandocCompiler' =
     defaultHakyllWriterOptions
       { PD.writerHighlightStyle = Just pandocHighlightStyle
       }
+
+--------------------------------------------------------------------------------
+
+-- | Adds the given prefix to the route
+prefixRouteWith :: String -> Routes
+prefixRouteWith prefix =
+  customRoute $ \id -> prefix ++ toFilePath id
 
 --------------------------------------------------------------------------------
 
