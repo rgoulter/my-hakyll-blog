@@ -31,7 +31,7 @@
     treefmt-nix,
   }: let
     # c.f. pkgs/top-level/haskell-packages.nix
-    ghcVersion = "965";
+    ghcVersion = "967";
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = import systems;
