@@ -1,7 +1,7 @@
 {
   pkgs ? import <nixpkgs> {},
   my-hakyll-blog ? import ./default.nix {},
-  ghcVersion ? "967",
+  ghcVersion ? "98",
 }:
 pkgs.mkShell {
   packages = with pkgs; [
